@@ -34,15 +34,12 @@ export const logout = async (): Promise<void> => {
 
 export const getCurrentUser = async (): Promise<User | null> => {
   try {
-    const { data } = await api.get<SuccessApiResponse<User>>("/me");
+    const { data } = await api.get<SuccessApiResponse<User>>("/auth/me");
     return data.data ?? null;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response?.status === 401)
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
       return null;
-
-    if (axios.isAxiosError<ErrorApiResponse>(error) && error.response) {
-      throw error.response.data as ErrorApiResponse;
     }
-    return null;
+    throw error;
   }
 };
