@@ -11,18 +11,50 @@ export const api = axios.create({
 /**
  * Silent JWT Token Refresh
  */
+
+let isRefreshing = false;
+
+let failedQueue: Array<{
+  resolve: (value: unknown) => void;
+  reject: (error: unknown) => void;
+}> = [];
+
+const processQueue = (error: unknown) => {
+  failedQueue.forEach((_promise) => {
+    return error ? _promise.reject(error) : _promise.resolve(null);
+  });
+  failedQueue = [];
+};
+
 api.interceptors.request.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes("/auth/refresh-token")
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(() => api(originalRequest));
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
         await api.post("/auth/refresh-token");
+        processQueue(null);
+        return api(originalRequest);
       } catch (refreshError) {
+        processQueue(refreshError);
+        window.location.href = "/";
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
   },
