@@ -14,15 +14,21 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useCurrentUser, useLogout } from "@/features/auth/queries/use-auth";
+import { useNavigate } from "@tanstack/react-router";
 import { EllipsisVerticalIcon, LogOut } from "lucide-react";
 
 export function NavUser() {
   const { data: user } = useCurrentUser();
   const { mutate: logout } = useLogout();
+  const navigate = useNavigate();
   const { isMobile } = useSidebar();
 
   const handleLogout = () => {
-    logout();
+    logout(undefined, {
+      onSuccess: () => {
+        navigate({ to: "/" });
+      },
+    });
   };
 
   return (

@@ -14,7 +14,6 @@ export const login = async ({
   password: string;
 }): Promise<SuccessApiResponse<User>> => {
   try {
-    console.log("AM I TRIGERRED");
     const { data } = await api.post<SuccessApiResponse<User>>("/auth/login", {
       email,
       password,
@@ -29,7 +28,7 @@ export const login = async ({
 };
 
 export const logout = async (): Promise<void> => {
-  await api.post("/logout");
+  await api.post("/auth/logout");
 };
 
 export const getCurrentUser = async (): Promise<User | null> => {
