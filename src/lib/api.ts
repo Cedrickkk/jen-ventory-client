@@ -1,3 +1,4 @@
+import { queryClient } from "@/lib/query";
 import axios from "axios";
 
 export const api = axios.create({
@@ -26,7 +27,7 @@ const processQueue = (error: unknown) => {
   failedQueue = [];
 };
 
-api.interceptors.request.use(
+api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -51,6 +52,7 @@ api.interceptors.request.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
+        queryClient.clear();
         window.location.href = "/";
         return Promise.reject(refreshError);
       } finally {
