@@ -7,6 +7,7 @@ export const userSchema = z.object({
   email: z.string().email(),
   phone: z.string().regex(/^09\d{9}$/),
   address: z.string(),
+  image: z.string().optional(),
 });
 
 export type User = z.infer<typeof userSchema>;
