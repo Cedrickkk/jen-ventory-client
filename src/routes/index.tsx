@@ -1,29 +1,49 @@
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useLogin } from "@/features/auth/queries/use-auth";
+import { authQueries, useLogin } from "@/features/auth/queries/use-auth";
 import { loginFormSchema } from "@/features/auth/schema/auth";
 import { useForm } from "@tanstack/react-form";
-import { createFileRoute } from "@tanstack/react-router";
-import { LoaderCircle, ShoppingCart } from "lucide-react";
+import {
+  createFileRoute,
+  isRedirect,
+  redirect,
+  useNavigate,
+} from "@tanstack/react-router";
+import { LoaderCircle, ShoppingBasket, ShoppingCart } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  validateSearch: (search) => search as { redirect?: string },
+  beforeLoad: async ({ context }) => {
+    try {
+      const user = await context.queryClient.fetchQuery(authQueries.user());
+
+      if (user?.id) {
+        throw redirect({ to: "/items" });
+      }
+
+      return null;
+    } catch (error) {
+      /** Throw redirect and swallow everything else */
+      if (isRedirect(error)) {
+        throw error;
+      }
+      /** Allow the page to render */
+      return null;
+    }
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { mutateAsync: loginAsync, error } = useLogin();
+  const search = Route.useSearch();
+  const navigate = useNavigate();
   const form = useForm({
     defaultValues: {
       email: "",
@@ -33,26 +53,27 @@ function RouteComponent() {
       onSubmit: loginFormSchema,
     },
     onSubmit: async ({ value }) => {
-      await loginAsync(value);
+      await loginAsync(value, {
+        onSuccess: () => {
+          navigate({ to: search.redirect ?? "/customers" });
+        },
+      });
     },
   });
 
   return (
-    <div className="flex min-h-screen flex-col min-w-4xl">
-      <main className="flex flex-1 flex-col items-center justify-center gap-6 p-6 w-full">
-        <ShoppingCart className="text-secondary-foreground h-20 w-20" />
-        <h1 className="text-4xl font-bold tracking-tight">JenVentory</h1>
-
-        <Card className="w-xl space-y-6 rounded-none border-none shadow-none">
-          <CardHeader>
-            <div className="flex flex-col items-center gap-1 text-center">
-              <h1 className="text-xl font-bold">Login to your account</h1>
-              <p className="text-sm text-balance text-muted-foreground">
-                Enter your email below to login to your account
-              </p>
+    <div className="grid min-h-svh lg:grid-cols-2">
+      <div className="flex flex-col gap-4 p-6 md:p-10">
+        <div className="flex justify-center gap-2 md:justify-start">
+          <a href="#" className="flex items-center gap-2 font-medium">
+            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+              <ShoppingCart className="size-4" />
             </div>
-          </CardHeader>
-          <CardContent>
+            JenVentory
+          </a>
+        </div>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-xs">
             <form
               id="login-form"
               onSubmit={(e) => {
@@ -62,6 +83,12 @@ function RouteComponent() {
               className="md:max-w-3xl"
             >
               <FieldGroup>
+                <div className="flex flex-col items-center gap-1 text-center">
+                  <h1 className="text-2xl font-bold">Login to your account</h1>
+                  <p className="text-muted-foreground text-sm text-balance">
+                    Enter your email below to login to your account
+                  </p>
+                </div>
                 <form.Field name="email">
                   {(field) => {
                     const isInvalid =
@@ -121,26 +148,28 @@ function RouteComponent() {
                     );
                   }}
                 </form.Field>
+                <Field>
+                  <Button
+                    type="submit"
+                    form="login-form"
+                    className="flex w-full cursor-pointer items-center justify-center"
+                    disabled={form.state.isSubmitting}
+                  >
+                    {form.state.isSubmitting && (
+                      <LoaderCircle className="h-4 w-4 animate-spin" />
+                    )}
+                    Login
+                  </Button>
+                </Field>
               </FieldGroup>
             </form>
-          </CardContent>
-          <CardFooter className="-mt-4">
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                form="login-form"
-                className="flex w-full cursor-pointer items-center justify-center"
-                disabled={form.state.isSubmitting}
-              >
-                {form.state.isSubmitting && (
-                  <LoaderCircle className="h-4 w-4 animate-spin" />
-                )}
-                Login
-              </Button>
-            </Field>
-          </CardFooter>
-        </Card>
-      </main>
+          </div>
+        </div>
+      </div>
+      <div className="bg-muted hidden lg:flex lg:flex-col lg:items-center lg:justify-center">
+        <ShoppingBasket className="text-muted-foreground h-48 w-48 dark:brightness-[0.2] dark:grayscale" />
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+      </div>
     </div>
   );
 }
