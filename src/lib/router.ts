@@ -1,8 +1,11 @@
+import { queryClient } from "@/lib/query";
 import { routeTree } from "@/routeTree.gen";
-import { QueryClient } from "@tanstack/react-query";
-import { createRouter } from "@tanstack/react-router";
-
-const queryClient = new QueryClient();
+import {
+  createRouter,
+  type LinkProps,
+  type RegisteredRouter,
+} from "@tanstack/react-router";
+import { Box, LayoutDashboard, Users, type LucideIcon } from "lucide-react";
 
 export const router = createRouter({
   routeTree,
@@ -19,3 +22,29 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
+
+export type AppRoutes = LinkProps<RegisteredRouter>["to"];
+
+export type RouteConfig = {
+  path: AppRoutes;
+  label: string;
+  icon: LucideIcon;
+};
+
+export const routeConfigs: Record<string, RouteConfig> = {
+  dashboard: {
+    path: "/dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+  },
+  items: {
+    path: "/items",
+    label: "Items",
+    icon: Box,
+  },
+  customers: {
+    path: "/customers",
+    label: "Customers",
+    icon: Users,
+  },
+};
