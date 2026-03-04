@@ -49,7 +49,9 @@ function RouteComponent() {
               <main
                 className={`mx-auto w-full flex-1 transition-all duration-300 ${isCompact ? "max-w-375 px-6" : "max-w-full px-10"}`}
               >
-                <Outlet />
+                <div className="sm:p-0 md:p-6">
+                  <Outlet />
+                </div>
               </main>
             </div>
           </SidebarInset>
