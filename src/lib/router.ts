@@ -37,9 +37,9 @@ export const routeConfigs: Record<string, RouteConfig> = {
     label: "Dashboard",
     icon: LayoutDashboard,
   },
-  items: {
-    path: "/items",
-    label: "Items",
+  products: {
+    path: "/products",
+    label: "Products",
     icon: Box,
   },
   customers: {

@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/page-header";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_authenticated/items")({
+export const Route = createFileRoute("/_authenticated/products")({
   component: RouteComponent,
 });
 

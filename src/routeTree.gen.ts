@@ -11,10 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedItemsRouteRouteImport } from './routes/_authenticated/items/route'
+import { Route as AuthenticatedProductsRouteRouteImport } from './routes/_authenticated/products/route'
 import { Route as AuthenticatedDashboardRouteRouteImport } from './routes/_authenticated/dashboard/route'
 import { Route as AuthenticatedCustomersRouteRouteImport } from './routes/_authenticated/customers/route'
-import { Route as AuthenticatedItemsIndexRouteImport } from './routes/_authenticated/items/index'
+import { Route as AuthenticatedProductsIndexRouteImport } from './routes/_authenticated/products/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCustomersIndexRouteImport } from './routes/_authenticated/customers/index'
 
@@ -27,11 +27,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedItemsRouteRoute = AuthenticatedItemsRouteRouteImport.update({
-  id: '/items',
-  path: '/items',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedProductsRouteRoute =
+  AuthenticatedProductsRouteRouteImport.update({
+    id: '/products',
+    path: '/products',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRouteRoute =
   AuthenticatedDashboardRouteRouteImport.update({
     id: '/dashboard',
@@ -44,11 +45,12 @@ const AuthenticatedCustomersRouteRoute =
     path: '/customers',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedItemsIndexRoute = AuthenticatedItemsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedItemsRouteRoute,
-} as any)
+const AuthenticatedProductsIndexRoute =
+  AuthenticatedProductsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedProductsRouteRoute,
+  } as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/',
@@ -66,16 +68,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/customers': typeof AuthenticatedCustomersRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
-  '/items': typeof AuthenticatedItemsRouteRouteWithChildren
+  '/products': typeof AuthenticatedProductsRouteRouteWithChildren
   '/customers/': typeof AuthenticatedCustomersIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
-  '/items/': typeof AuthenticatedItemsIndexRoute
+  '/products/': typeof AuthenticatedProductsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
-  '/items': typeof AuthenticatedItemsIndexRoute
+  '/products': typeof AuthenticatedProductsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -83,10 +85,10 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/customers': typeof AuthenticatedCustomersRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
-  '/_authenticated/items': typeof AuthenticatedItemsRouteRouteWithChildren
+  '/_authenticated/products': typeof AuthenticatedProductsRouteRouteWithChildren
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
-  '/_authenticated/items/': typeof AuthenticatedItemsIndexRoute
+  '/_authenticated/products/': typeof AuthenticatedProductsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -94,22 +96,22 @@ export interface FileRouteTypes {
     | '/'
     | '/customers'
     | '/dashboard'
-    | '/items'
+    | '/products'
     | '/customers/'
     | '/dashboard/'
-    | '/items/'
+    | '/products/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/customers' | '/dashboard' | '/items'
+  to: '/' | '/customers' | '/dashboard' | '/products'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
-    | '/_authenticated/items'
+    | '/_authenticated/products'
     | '/_authenticated/customers/'
     | '/_authenticated/dashboard/'
-    | '/_authenticated/items/'
+    | '/_authenticated/products/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -133,11 +135,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/items': {
-      id: '/_authenticated/items'
-      path: '/items'
-      fullPath: '/items'
-      preLoaderRoute: typeof AuthenticatedItemsRouteRouteImport
+    '/_authenticated/products': {
+      id: '/_authenticated/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof AuthenticatedProductsRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -154,12 +156,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCustomersRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/items/': {
-      id: '/_authenticated/items/'
+    '/_authenticated/products/': {
+      id: '/_authenticated/products/'
       path: '/'
-      fullPath: '/items/'
-      preLoaderRoute: typeof AuthenticatedItemsIndexRouteImport
-      parentRoute: typeof AuthenticatedItemsRouteRoute
+      fullPath: '/products/'
+      preLoaderRoute: typeof AuthenticatedProductsIndexRouteImport
+      parentRoute: typeof AuthenticatedProductsRouteRoute
     }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
@@ -206,24 +208,24 @@ const AuthenticatedDashboardRouteRouteWithChildren =
     AuthenticatedDashboardRouteRouteChildren,
   )
 
-interface AuthenticatedItemsRouteRouteChildren {
-  AuthenticatedItemsIndexRoute: typeof AuthenticatedItemsIndexRoute
+interface AuthenticatedProductsRouteRouteChildren {
+  AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
 }
 
-const AuthenticatedItemsRouteRouteChildren: AuthenticatedItemsRouteRouteChildren =
+const AuthenticatedProductsRouteRouteChildren: AuthenticatedProductsRouteRouteChildren =
   {
-    AuthenticatedItemsIndexRoute: AuthenticatedItemsIndexRoute,
+    AuthenticatedProductsIndexRoute: AuthenticatedProductsIndexRoute,
   }
 
-const AuthenticatedItemsRouteRouteWithChildren =
-  AuthenticatedItemsRouteRoute._addFileChildren(
-    AuthenticatedItemsRouteRouteChildren,
+const AuthenticatedProductsRouteRouteWithChildren =
+  AuthenticatedProductsRouteRoute._addFileChildren(
+    AuthenticatedProductsRouteRouteChildren,
   )
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCustomersRouteRoute: typeof AuthenticatedCustomersRouteRouteWithChildren
   AuthenticatedDashboardRouteRoute: typeof AuthenticatedDashboardRouteRouteWithChildren
-  AuthenticatedItemsRouteRoute: typeof AuthenticatedItemsRouteRouteWithChildren
+  AuthenticatedProductsRouteRoute: typeof AuthenticatedProductsRouteRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -231,7 +233,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedCustomersRouteRouteWithChildren,
   AuthenticatedDashboardRouteRoute:
     AuthenticatedDashboardRouteRouteWithChildren,
-  AuthenticatedItemsRouteRoute: AuthenticatedItemsRouteRouteWithChildren,
+  AuthenticatedProductsRouteRoute: AuthenticatedProductsRouteRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
