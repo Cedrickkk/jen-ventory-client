@@ -25,6 +25,13 @@ import { LoaderCircle, SearchIcon } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/customers/")({
+  head: () => ({
+    meta: [
+      {
+        title: "Customers - JenVentory",
+      },
+    ],
+  }),
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData(customerQueries.list());
   },

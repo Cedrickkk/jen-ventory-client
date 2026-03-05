@@ -33,6 +33,13 @@ import { useState } from "react";
 import { type DateRange } from "react-day-picker";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
+  head: () => ({
+    meta: [
+      {
+        title: "Dashboard - JenVentory",
+      },
+    ],
+  }),
   component: RouteComponent,
 });
 
