@@ -1,5 +1,9 @@
+import {
+  getAllCustomers,
+  searchCustomer,
+} from "@/features/customers/api/customer-api";
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getAllCustomers } from "../api/customer-api";
+import { useDebounce } from "use-debounce";
 
 export const customerQueries = {
   all: () => ["customers"] as const,
@@ -12,8 +16,24 @@ export const customerQueries = {
       retry: false,
     });
   },
+  searches: () => [...customerQueries.all(), "search"] as const,
+  search: (query: string) => {
+    return queryOptions({
+      queryKey: [...customerQueries.searches(), query],
+      queryFn: () => searchCustomer(query),
+    });
+  },
 };
 
 export const useGetCustomers = () => {
   return useQuery(customerQueries.list());
+};
+
+export const useSearchCustomer = (searchQuery: string) => {
+  const [debouncedSearch] = useDebounce(searchQuery, 300);
+
+  return useQuery({
+    ...customerQueries.search(debouncedSearch),
+    enabled: debouncedSearch.length >= 3,
+  });
 };
