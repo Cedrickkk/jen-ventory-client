@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { authQueries, useLogin } from "@/features/auth/queries/use-auth";
 import { loginFormSchema } from "@/features/auth/schema/auth";
+import type { AppRoutes } from "@/lib/router";
 import { useForm } from "@tanstack/react-form";
 import {
   createFileRoute,
@@ -15,16 +16,18 @@ import {
   redirect,
   useNavigate,
 } from "@tanstack/react-router";
-import { LoaderCircle, ShoppingBasket, ShoppingCart } from "lucide-react";
+import { LoaderCircle, ShoppingCart } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => search as { redirect?: string },
   beforeLoad: async ({ context }) => {
     try {
-      const user = await context.queryClient.fetchQuery(authQueries.user());
+      const user = await context.queryClient.ensureQueryData(
+        authQueries.user(),
+      );
 
       if (user?.id) {
-        throw redirect({ to: "/items" });
+        throw redirect({ to: "/dashboard" });
       }
 
       return null;
@@ -54,8 +57,10 @@ function RouteComponent() {
     },
     onSubmit: async ({ value }) => {
       await loginAsync(value, {
-        onSuccess: () => {
-          navigate({ to: search.redirect ?? "/customers" });
+        onSuccess: async () => {
+          await navigate({
+            to: search.redirect ?? ("/dashboard" as AppRoutes),
+          });
         },
       });
     },
@@ -167,8 +172,10 @@ function RouteComponent() {
         </div>
       </div>
       <div className="bg-muted hidden lg:flex lg:flex-col lg:items-center lg:justify-center">
-        <ShoppingBasket className="text-muted-foreground h-48 w-48 dark:brightness-[0.2] dark:grayscale" />
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+        <ShoppingCart className="h-48 w-48" />
+        <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+          JenVentory
+        </h1>
       </div>
     </div>
   );
