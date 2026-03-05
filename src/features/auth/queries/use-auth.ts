@@ -1,9 +1,9 @@
-import { getCurrentUser, login, logout } from "@/features/auth/api/auth-api";
-import type { User } from "@/features/auth/schema/user";
 import type {
   ErrorApiResponse,
   SuccessApiResponse,
-} from "@/features/response/schema/response";
+} from "@/features/api/schema/response";
+import { getCurrentUser, login, logout } from "@/features/auth/api/auth-api";
+import type { User } from "@/features/auth/schema/user";
 import {
   queryOptions,
   useMutation,

@@ -1,8 +1,8 @@
-import type { User } from "@/features/auth/schema/user";
 import type {
   ErrorApiResponse,
   SuccessApiResponse,
-} from "@/features/response/schema/response";
+} from "@/features/api/schema/response";
+import type { User } from "@/features/auth/schema/user";
 import { api } from "@/lib/api";
 import axios from "axios";
 

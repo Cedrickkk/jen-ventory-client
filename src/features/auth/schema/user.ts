@@ -1,4 +1,4 @@
-import { baseResponseDataSchema } from "@/features/response/schema/response";
+import { baseResponseDataSchema } from "@/features/api/schema/response";
 import z from "zod/v3";
 
 export const userSchema = z.object({
