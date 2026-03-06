@@ -9,8 +9,8 @@ function RouteComponent() {
   return (
     <div>
       <PageHeader
-        title="Inventory"
-        description="Manage your products, update prices, and check which items need restock from your suppliers."
+        title="Products"
+        description="Manage your products, update prices, and check which items need to restock."
       />
       <Outlet />
     </div>
