@@ -6,11 +6,16 @@ import { baseResponseDataSchema } from "@/features/api/schema/response";
 import { z } from "zod/v3";
 
 export const customerSchema = z.object({
-  name: z.string(),
-  phone: z.string(),
-  address: z.string(),
+  name: z.string().min(1, { message: "Name is required." }),
+  phone: z
+    .string()
+    .regex(/^09\d{9}$/, "Must be a valid PH mobile number.")
+    .min(1, { message: "Phone mobile number is required." }),
+  address: z.string().min(1, { message: "Address is required." }),
   active: z.boolean(),
 });
+
+export const editCustomerSchema = customerSchema.omit({ active: true });
 
 export const customerResponseSchema = z.object({
   ...baseResponseDataSchema.shape,
@@ -21,4 +26,5 @@ export const paginatedCustomerSchema = paginatedSchema(customerSchema);
 
 export type Customer = z.infer<typeof customerResponseSchema>;
 export type CreateCustomer = z.infer<typeof customerSchema>;
+export type EditCustomer = z.infer<typeof editCustomerSchema>;
 export type PaginatedCustomer = Paginated<Customer>;

@@ -1,18 +1,32 @@
+import type { PageParamsSchema } from "@/features/api/schema/pagination";
 import type {
   ErrorApiResponse,
   SuccessApiResponse,
 } from "@/features/api/schema/response";
 import type {
+  CreateCustomer,
   Customer,
+  EditCustomer,
   PaginatedCustomer,
 } from "@/features/customers/schema/customer";
 import { api } from "@/lib/api";
 import axios from "axios";
 
-export const getAllCustomers = async () => {
+export const getAllCustomers = async (params?: PageParamsSchema) => {
   try {
-    const response =
-      await api.get<SuccessApiResponse<PaginatedCustomer>>("/customers");
+    const response = await api.get<SuccessApiResponse<PaginatedCustomer>>(
+      "/customers",
+      {
+        params: {
+          page: params?.page,
+          size: params?.size ?? 10,
+          sort: params?.sort,
+        },
+        paramsSerializer: {
+          indexes: null,
+        },
+      },
+    );
     if (!response) return null;
     const { data } = response;
     return data;
@@ -34,6 +48,60 @@ export const searchCustomer = async (query: string) => {
     );
     if (!response) return null;
     const { data } = response;
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const createCustomer = async (customer: CreateCustomer) => {
+  try {
+    const { data } = await api.post<SuccessApiResponse<Customer>>(
+      `/customers`,
+      customer,
+    );
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const editCustomer = async (id: number, customer: EditCustomer) => {
+  try {
+    const { data } = await api.put<SuccessApiResponse<Customer>>(
+      `/customers/${id}`,
+      customer,
+    );
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const toggleCustomerStatus = async (id: number, active: boolean) => {
+  try {
+    const endpoint = active
+      ? `/customers/${id}/deactivate`
+      : `/customers/${id}/reactivate`;
+    const { data } = await api.patch<SuccessApiResponse<Customer>>(endpoint);
     return data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
