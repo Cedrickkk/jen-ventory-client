@@ -5,6 +5,7 @@ import {
   HeadContent,
   Outlet,
 } from "@tanstack/react-router";
+import { Toaster } from "sonner";
 
 type RouterContext = {
   queryClient: QueryClient;
@@ -18,6 +19,7 @@ function RootComponent() {
   return (
     <>
       <HeadContent />
+      <Toaster position="top-center" />
       <TopLoader />
       <Outlet />
     </>
