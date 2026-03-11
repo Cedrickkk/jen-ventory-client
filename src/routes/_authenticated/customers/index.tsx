@@ -74,7 +74,7 @@ function RouteComponent() {
             <InputGroupAddon align="inline-end">
               <X
                 onClick={() => setSearchQuery("")}
-                className="size-4 cursor-pointer"
+                className="size-3.5 cursor-pointer"
                 type="button"
               />
             </InputGroupAddon>
