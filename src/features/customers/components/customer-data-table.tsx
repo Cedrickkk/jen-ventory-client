@@ -110,7 +110,7 @@ export function CustomerDataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="border-n"
+                className="border-none"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="p-4">

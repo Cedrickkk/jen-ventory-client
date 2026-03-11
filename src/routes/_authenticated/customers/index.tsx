@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import {
@@ -22,7 +23,7 @@ import {
 } from "@/features/customers/queries/use-customer";
 import { usePagination } from "@/hooks/use-pagination";
 import { createFileRoute } from "@tanstack/react-router";
-import { Search, Upload } from "lucide-react";
+import { Search, Upload, X } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/customers/")({
@@ -61,14 +62,26 @@ function RouteComponent() {
   return (
     <div className="space-y-6">
       <div className="flex gap-4 py-6 max-sm:flex-col sm:items-center sm:justify-between">
-        <InputGroup className="max-w-xs">
+        <InputGroup className="max-w-md">
           <InputGroupInput
             placeholder="Search..."
+            value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <InputGroupAddon>
             <Search />
           </InputGroupAddon>
+          {searchQuery && (
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                variant="ghost"
+                size="icon-xs"
+                onClick={() => setSearchQuery("")}
+              >
+                <X />
+              </InputGroupButton>
+            </InputGroupAddon>
+          )}
         </InputGroup>
         <div className="flex flex-wrap items-center gap-4 sm:justify-between">
           <Select
