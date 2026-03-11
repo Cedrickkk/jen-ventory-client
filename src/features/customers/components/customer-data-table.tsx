@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/table";
 import type { Paginated } from "@/features/api/schema/pagination";
 import { getPageNumbers } from "@/hooks/use-pagination";
+import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 
 type CustomerDataTableProps<TData, TValue> = {
@@ -43,6 +44,7 @@ type CustomerDataTableProps<TData, TValue> = {
   page?: Pick<Paginated<unknown>, "page">["page"];
   currentPage: number;
   onPageChange: (page: number) => void;
+  isLoading?: boolean;
 };
 
 export function CustomerDataTable<TData, TValue>({
@@ -51,6 +53,7 @@ export function CustomerDataTable<TData, TValue>({
   page,
   currentPage,
   onPageChange,
+  isLoading,
 }: CustomerDataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
@@ -96,7 +99,13 @@ export function CustomerDataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {isLoading ? (
+            <TableRow className="border-none">
+              <TableCell className="p-4 text-center" colSpan={columns.length}>
+                <LoaderCircle className="text-muted-foreground mx-auto animate-spin" />
+              </TableCell>
+            </TableRow>
+          ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}

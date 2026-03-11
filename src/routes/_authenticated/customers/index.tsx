@@ -54,7 +54,8 @@ function RouteComponent() {
     initialSort: ["id,asc", "createdAt,desc"],
   });
   const { data: customers } = useGetCustomers(pageParams);
-  const { data: searchResult } = useSearchCustomer(searchQuery.toLowerCase());
+  const { data: searchResult, isFetching: isSearchFetching } =
+    useSearchCustomer(searchQuery.toLowerCase());
   const isSearching = searchQuery.length >= 3;
 
   return (
@@ -107,6 +108,7 @@ function RouteComponent() {
             ? searchResult?.data || []
             : customers?.data?.content || []
         }
+        isLoading={isSearchFetching}
         page={isSearching ? undefined : customers?.data?.page}
         currentPage={pageParams.page}
         onPageChange={setPage}
