@@ -35,9 +35,10 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/refresh-token")
+      !originalRequest.url?.includes("/auth/")
     ) {
       if (isRefreshing) {
+        originalRequest._retry = true;
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         }).then(() => api(originalRequest));
@@ -59,5 +60,7 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     }
+
+    return Promise.reject(error);
   },
 );
