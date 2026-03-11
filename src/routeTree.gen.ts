@@ -11,10 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTransactionsRouteRouteImport } from './routes/_authenticated/transactions/route'
 import { Route as AuthenticatedProductsRouteRouteImport } from './routes/_authenticated/products/route'
+import { Route as AuthenticatedGcashRouteRouteImport } from './routes/_authenticated/gcash/route'
 import { Route as AuthenticatedDashboardRouteRouteImport } from './routes/_authenticated/dashboard/route'
 import { Route as AuthenticatedCustomersRouteRouteImport } from './routes/_authenticated/customers/route'
+import { Route as AuthenticatedTransactionsIndexRouteImport } from './routes/_authenticated/transactions/index'
 import { Route as AuthenticatedProductsIndexRouteImport } from './routes/_authenticated/products/index'
+import { Route as AuthenticatedGcashIndexRouteImport } from './routes/_authenticated/gcash/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCustomersIndexRouteImport } from './routes/_authenticated/customers/index'
 
@@ -27,12 +31,23 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTransactionsRouteRoute =
+  AuthenticatedTransactionsRouteRouteImport.update({
+    id: '/transactions',
+    path: '/transactions',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProductsRouteRoute =
   AuthenticatedProductsRouteRouteImport.update({
     id: '/products',
     path: '/products',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedGcashRouteRoute = AuthenticatedGcashRouteRouteImport.update({
+  id: '/gcash',
+  path: '/gcash',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRouteRoute =
   AuthenticatedDashboardRouteRouteImport.update({
     id: '/dashboard',
@@ -45,12 +60,23 @@ const AuthenticatedCustomersRouteRoute =
     path: '/customers',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedTransactionsIndexRoute =
+  AuthenticatedTransactionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedTransactionsRouteRoute,
+  } as any)
 const AuthenticatedProductsIndexRoute =
   AuthenticatedProductsIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedProductsRouteRoute,
   } as any)
+const AuthenticatedGcashIndexRoute = AuthenticatedGcashIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedGcashRouteRoute,
+} as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/',
@@ -68,16 +94,22 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/customers': typeof AuthenticatedCustomersRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
+  '/gcash': typeof AuthenticatedGcashRouteRouteWithChildren
   '/products': typeof AuthenticatedProductsRouteRouteWithChildren
+  '/transactions': typeof AuthenticatedTransactionsRouteRouteWithChildren
   '/customers/': typeof AuthenticatedCustomersIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/gcash/': typeof AuthenticatedGcashIndexRoute
   '/products/': typeof AuthenticatedProductsIndexRoute
+  '/transactions/': typeof AuthenticatedTransactionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/gcash': typeof AuthenticatedGcashIndexRoute
   '/products': typeof AuthenticatedProductsIndexRoute
+  '/transactions': typeof AuthenticatedTransactionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,10 +117,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/customers': typeof AuthenticatedCustomersRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
+  '/_authenticated/gcash': typeof AuthenticatedGcashRouteRouteWithChildren
   '/_authenticated/products': typeof AuthenticatedProductsRouteRouteWithChildren
+  '/_authenticated/transactions': typeof AuthenticatedTransactionsRouteRouteWithChildren
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/gcash/': typeof AuthenticatedGcashIndexRoute
   '/_authenticated/products/': typeof AuthenticatedProductsIndexRoute
+  '/_authenticated/transactions/': typeof AuthenticatedTransactionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,22 +132,36 @@ export interface FileRouteTypes {
     | '/'
     | '/customers'
     | '/dashboard'
+    | '/gcash'
     | '/products'
+    | '/transactions'
     | '/customers/'
     | '/dashboard/'
+    | '/gcash/'
     | '/products/'
+    | '/transactions/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/customers' | '/dashboard' | '/products'
+  to:
+    | '/'
+    | '/customers'
+    | '/dashboard'
+    | '/gcash'
+    | '/products'
+    | '/transactions'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
+    | '/_authenticated/gcash'
     | '/_authenticated/products'
+    | '/_authenticated/transactions'
     | '/_authenticated/customers/'
     | '/_authenticated/dashboard/'
+    | '/_authenticated/gcash/'
     | '/_authenticated/products/'
+    | '/_authenticated/transactions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -135,11 +185,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/transactions': {
+      id: '/_authenticated/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof AuthenticatedTransactionsRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/products': {
       id: '/_authenticated/products'
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof AuthenticatedProductsRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/gcash': {
+      id: '/_authenticated/gcash'
+      path: '/gcash'
+      fullPath: '/gcash'
+      preLoaderRoute: typeof AuthenticatedGcashRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -156,12 +220,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCustomersRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/transactions/': {
+      id: '/_authenticated/transactions/'
+      path: '/'
+      fullPath: '/transactions/'
+      preLoaderRoute: typeof AuthenticatedTransactionsIndexRouteImport
+      parentRoute: typeof AuthenticatedTransactionsRouteRoute
+    }
     '/_authenticated/products/': {
       id: '/_authenticated/products/'
       path: '/'
       fullPath: '/products/'
       preLoaderRoute: typeof AuthenticatedProductsIndexRouteImport
       parentRoute: typeof AuthenticatedProductsRouteRoute
+    }
+    '/_authenticated/gcash/': {
+      id: '/_authenticated/gcash/'
+      path: '/'
+      fullPath: '/gcash/'
+      preLoaderRoute: typeof AuthenticatedGcashIndexRouteImport
+      parentRoute: typeof AuthenticatedGcashRouteRoute
     }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
@@ -208,6 +286,20 @@ const AuthenticatedDashboardRouteRouteWithChildren =
     AuthenticatedDashboardRouteRouteChildren,
   )
 
+interface AuthenticatedGcashRouteRouteChildren {
+  AuthenticatedGcashIndexRoute: typeof AuthenticatedGcashIndexRoute
+}
+
+const AuthenticatedGcashRouteRouteChildren: AuthenticatedGcashRouteRouteChildren =
+  {
+    AuthenticatedGcashIndexRoute: AuthenticatedGcashIndexRoute,
+  }
+
+const AuthenticatedGcashRouteRouteWithChildren =
+  AuthenticatedGcashRouteRoute._addFileChildren(
+    AuthenticatedGcashRouteRouteChildren,
+  )
+
 interface AuthenticatedProductsRouteRouteChildren {
   AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
 }
@@ -222,10 +314,26 @@ const AuthenticatedProductsRouteRouteWithChildren =
     AuthenticatedProductsRouteRouteChildren,
   )
 
+interface AuthenticatedTransactionsRouteRouteChildren {
+  AuthenticatedTransactionsIndexRoute: typeof AuthenticatedTransactionsIndexRoute
+}
+
+const AuthenticatedTransactionsRouteRouteChildren: AuthenticatedTransactionsRouteRouteChildren =
+  {
+    AuthenticatedTransactionsIndexRoute: AuthenticatedTransactionsIndexRoute,
+  }
+
+const AuthenticatedTransactionsRouteRouteWithChildren =
+  AuthenticatedTransactionsRouteRoute._addFileChildren(
+    AuthenticatedTransactionsRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCustomersRouteRoute: typeof AuthenticatedCustomersRouteRouteWithChildren
   AuthenticatedDashboardRouteRoute: typeof AuthenticatedDashboardRouteRouteWithChildren
+  AuthenticatedGcashRouteRoute: typeof AuthenticatedGcashRouteRouteWithChildren
   AuthenticatedProductsRouteRoute: typeof AuthenticatedProductsRouteRouteWithChildren
+  AuthenticatedTransactionsRouteRoute: typeof AuthenticatedTransactionsRouteRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -233,7 +341,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedCustomersRouteRouteWithChildren,
   AuthenticatedDashboardRouteRoute:
     AuthenticatedDashboardRouteRouteWithChildren,
+  AuthenticatedGcashRouteRoute: AuthenticatedGcashRouteRouteWithChildren,
   AuthenticatedProductsRouteRoute: AuthenticatedProductsRouteRouteWithChildren,
+  AuthenticatedTransactionsRouteRoute:
+    AuthenticatedTransactionsRouteRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =

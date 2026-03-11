@@ -5,7 +5,14 @@ import {
   type LinkProps,
   type RegisteredRouter,
 } from "@tanstack/react-router";
-import { Box, LayoutDashboard, Users, type LucideIcon } from "lucide-react";
+import {
+  Box,
+  CreditCard,
+  LayoutDashboard,
+  ScanQrCode,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 
 export const router = createRouter({
   routeTree,
@@ -46,5 +53,15 @@ export const routeConfigs: Record<string, RouteConfig> = {
     path: "/customers",
     label: "Customers",
     icon: Users,
+  },
+  gcash: {
+    path: "/gcash",
+    label: "GCash",
+    icon: ScanQrCode,
+  },
+  transactions: {
+    path: "/transactions",
+    label: "Transactions",
+    icon: CreditCard,
   },
 };
