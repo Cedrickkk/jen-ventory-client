@@ -1,10 +1,15 @@
-import type { PageParamsSchema } from "@/features/api/schema/pagination";
-import { useCallback, useState } from "react";
+import {
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+  useQueryStates,
+} from "nuqs";
+import { useCallback } from "react";
 
-type UsePaginationOptions = {
-  initialPage?: number;
-  initialSize?: number;
-  initialSort?: string[];
+export const paginationParsers = {
+  page: parseAsInteger.withDefault(1),
+  size: parseAsInteger.withDefault(10),
+  sort: parseAsArrayOf(parseAsString).withDefault([]),
 };
 
 export function getPageNumbers(
@@ -39,43 +44,54 @@ export function getPageNumbers(
   return pages;
 }
 
+type UsePaginationOptions = {
+  initialPage?: number;
+  initialSize?: number;
+  initialSort?: string[];
+};
+
 export function usePagination(options: UsePaginationOptions = {}) {
-  const { initialPage = 1, initialSize = 10, initialSort } = options;
+  const { initialPage = 1, initialSize = 10, initialSort = [] } = options;
 
-  const [pageParams, setPageParams] = useState<
-    Required<Pick<PageParamsSchema, "page" | "size">> &
-      Pick<PageParamsSchema, "sort">
-  >({
-    page: initialPage,
-    size: initialSize,
-    sort: initialSort,
-  });
+  const [pageParams, setPageParams] = useQueryStates(
+    {
+      page: parseAsInteger.withDefault(initialPage),
+      size: parseAsInteger.withDefault(initialSize),
+      sort: parseAsArrayOf(parseAsString).withDefault(initialSort),
+    },
+    { history: "push" },
+  );
 
-  const setPage = useCallback((page: number) => {
-    setPageParams((prev) => ({ ...prev, page }));
-  }, []);
+  const setPage = useCallback(
+    (page: number) => setPageParams({ page }),
+    [setPageParams],
+  );
 
-  const setSize = useCallback((size: number) => {
-    setPageParams((prev) => ({ ...prev, page: 1, size }));
-  }, []);
+  const setSize = useCallback(
+    (size: number) => setPageParams({ page: 1, size }),
+    [setPageParams],
+  );
 
-  const setSort = useCallback((sort: string[] | undefined) => {
-    setPageParams((prev) => ({ ...prev, sort }));
-  }, []);
+  const setSort = useCallback(
+    (sort: string[]) => setPageParams({ sort }),
+    [setPageParams],
+  );
 
-  const nextPage = useCallback((totalPages: number) => {
-    setPageParams((prev) => ({
-      ...prev,
-      page: Math.min(prev.page + 1, totalPages),
-    }));
-  }, []);
+  const nextPage = useCallback(
+    (totalPages: number) =>
+      setPageParams((prev) => ({
+        page: Math.min(prev.page + 1, totalPages),
+      })),
+    [setPageParams],
+  );
 
-  const prevPage = useCallback(() => {
-    setPageParams((prev) => ({
-      ...prev,
-      page: Math.max(prev.page - 1, 1),
-    }));
-  }, []);
+  const prevPage = useCallback(
+    () =>
+      setPageParams((prev) => ({
+        page: Math.max(prev.page - 1, 1),
+      })),
+    [setPageParams],
+  );
 
   return {
     pageParams,

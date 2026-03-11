@@ -23,7 +23,7 @@ import {
 import { usePagination } from "@/hooks/use-pagination";
 import { createFileRoute } from "@tanstack/react-router";
 import { Search, Upload, X } from "lucide-react";
-import { useState } from "react";
+import { parseAsString, useQueryState } from "nuqs";
 
 export const Route = createFileRoute("/_authenticated/customers/")({
   head: () => ({
@@ -48,9 +48,12 @@ export const Route = createFileRoute("/_authenticated/customers/")({
 const ROWS_PER_PAGE = [5, 10, 20, 30];
 
 function RouteComponent() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useQueryState(
+    "query",
+    parseAsString.withDefault(""),
+  );
   const { pageParams, setPage, setSize } = usePagination({
-    initialSize: 5,
+    initialSize: 10,
     initialSort: ["id,asc", "createdAt,desc"],
   });
   const { data: customers } = useGetCustomers(pageParams);
