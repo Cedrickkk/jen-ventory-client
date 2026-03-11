@@ -16,9 +16,9 @@ export const paginatedSchema = <T extends z.ZodTypeAny>(schema: T) => {
 };
 
 export const pageParamsSchema = z.object({
-  page: z.number().int().min(1).default(1),
-  size: z.number().int().min(1).max(100).default(10),
-  sort: z.string().optional(),
+  page: z.number().int().min(1).default(1).optional(),
+  size: z.number().int().min(1).max(100).default(10).optional(),
+  sort: z.array(z.string()).optional(),
 });
 
 export type PageParamsSchema = z.infer<typeof pageParamsSchema>;
