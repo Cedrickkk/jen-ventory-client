@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
-  InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import {
@@ -73,13 +72,11 @@ function RouteComponent() {
           </InputGroupAddon>
           {searchQuery && (
             <InputGroupAddon align="inline-end">
-              <InputGroupButton
-                variant="ghost"
-                size="icon-xs"
+              <X
                 onClick={() => setSearchQuery("")}
-              >
-                <X />
-              </InputGroupButton>
+                className="size-4 cursor-pointer"
+                type="button"
+              />
             </InputGroupAddon>
           )}
         </InputGroup>
