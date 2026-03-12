@@ -13,6 +13,11 @@ import {
 import { FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useEditCustomer } from "@/features/customers/queries/use-customer";
 import {
   editCustomerSchema,
@@ -59,11 +64,18 @@ export default function CustomerEditFormDialog({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="icon-sm">
-          <Pencil />
-        </Button>
-      </DialogTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DialogTrigger asChild>
+            <Button variant="ghost" size="icon-lg" className="cursor-pointer">
+              <Pencil />
+            </Button>
+          </DialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Edit</p>
+        </TooltipContent>
+      </Tooltip>
       <form
         id={`edit-customer-form-${id}`}
         onSubmit={(e) => {

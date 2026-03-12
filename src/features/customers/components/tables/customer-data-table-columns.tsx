@@ -1,9 +1,17 @@
 import { TableHeaderButton } from "@/components/table-header-button";
+import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import EditCustomerFormDialog from "@/features/customers/components/customer-edit-form-dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import EditCustomerFormDialog from "@/features/customers/components/forms/customer-edit-form-dialog";
 import type { Customer } from "@/features/customers/schema/customer";
+import { Link } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
-import CustomerStatusToggle from "./customer-status-toggle";
+import { Eye } from "lucide-react";
+import CustomerStatusToggle from "../customer-status-toggle";
 
 export const columns: ColumnDef<Customer>[] = [
   {
@@ -57,6 +65,7 @@ export const columns: ColumnDef<Customer>[] = [
   },
   {
     id: "actions",
+    header: () => <p className="text-muted-foreground">Actions</p>,
     cell: ({ row }) => {
       return (
         <ButtonGroup>
@@ -64,6 +73,26 @@ export const columns: ColumnDef<Customer>[] = [
             id={row.original.id}
             customer={row.original}
           />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-lg"
+                className="cursor-pointer"
+                asChild
+              >
+                <Link
+                  to="/customers/$customerId"
+                  params={{ customerId: row.original.id.toString() }}
+                >
+                  <Eye />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>View</p>
+            </TooltipContent>
+          </Tooltip>
         </ButtonGroup>
       );
     },
