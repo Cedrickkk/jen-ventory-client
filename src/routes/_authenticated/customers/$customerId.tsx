@@ -12,6 +12,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CustomerDebtHistoryTabContent from "@/features/customers/components/tabs/customer-debt-history-tab-content";
+import CustomerGCashHistoryTabContent from "@/features/customers/components/tabs/customer-gcash-history-tab-content";
 import CustomerTransactionsTabContent from "@/features/customers/components/tabs/customer-transactions-tab-content";
 import { useGetCustomerById } from "@/features/customers/queries/use-customer";
 import StatisticsCard from "@/features/dashboard/components/statistics-card";
@@ -180,7 +181,11 @@ function RouteComponent() {
                   customerId={Number(customerId)}
                 />
               </TabsContent>
-              <TabsContent value="gcash">gcas</TabsContent>
+              <TabsContent value="gcash">
+                <CustomerGCashHistoryTabContent
+                  customerId={Number(customerId)}
+                />
+              </TabsContent>
             </Tabs>
           </div>
         </div>

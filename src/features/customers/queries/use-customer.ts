@@ -5,6 +5,7 @@ import {
   getAllCustomers,
   getCustomerById,
   getCustomerDebtHistory,
+  getCustomerGCashHistory,
   getCustomerTransactions,
   searchCustomer,
   toggleCustomerStatus,
@@ -63,6 +64,14 @@ export const customerQueries = {
     return queryOptions({
       queryKey: customerQueries.debtHistories(id),
       queryFn: () => getCustomerDebtHistory(id),
+    });
+  },
+  gCashHistories: (id: number) =>
+    [...customerQueries.detail(id).queryKey, "gcash-history"] as const,
+  gCashHistory: (id: number) => {
+    return queryOptions({
+      queryKey: customerQueries.gCashHistories(id),
+      queryFn: () => getCustomerGCashHistory(id),
     });
   },
 };
@@ -133,4 +142,8 @@ export const useGetCustomerTransactions = (id: number) => {
 
 export const useGetCustomerDebtHistory = (id: number) => {
   return useQuery(customerQueries.debtHistory(id));
+};
+
+export const useGetCustomerGCashHistory = (id: number) => {
+  return useQuery(customerQueries.gCashHistory(id));
 };
