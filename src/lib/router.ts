@@ -9,7 +9,8 @@ import {
   Box,
   CreditCard,
   LayoutDashboard,
-  ScanQrCode,
+  PhilippinePeso,
+  ShoppingCart,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -39,6 +40,11 @@ export type RouteConfig = {
 };
 
 export const routeConfigs: Record<string, RouteConfig> = {
+  pos: {
+    path: "/pos",
+    label: "Cashier",
+    icon: ShoppingCart,
+  },
   dashboard: {
     path: "/dashboard",
     label: "Dashboard",
@@ -57,7 +63,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
   gcash: {
     path: "/gcash",
     label: "GCash",
-    icon: ScanQrCode,
+    icon: PhilippinePeso,
   },
   transactions: {
     path: "/transactions",

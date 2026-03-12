@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -12,9 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import CustomerCreateFormSheet from "@/features/customers/components/customer-create-form-sheet";
-import { CustomerDataTable } from "@/features/customers/components/customer-data-table";
-import { columns } from "@/features/customers/components/customer-data-table-columns";
+import CustomerCreateFormSheet from "@/features/customers/components/forms/customer-create-form-sheet";
+import { CustomerDataTable } from "@/features/customers/components/tables/customer-data-table";
+import { columns } from "@/features/customers/components/tables/customer-data-table-columns";
 import {
   customerQueries,
   useGetCustomers,
@@ -62,70 +63,76 @@ function RouteComponent() {
   const isSearching = searchQuery.length >= 3;
 
   return (
-    <div className="space-y-6">
-      <div className="flex gap-4 py-6 max-sm:flex-col sm:items-center sm:justify-between">
-        <InputGroup className="max-w-md">
-          <InputGroupInput
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <InputGroupAddon>
-            <Search />
-          </InputGroupAddon>
-          {searchQuery && (
-            <InputGroupAddon align="inline-end">
-              <X
-                onClick={() => setSearchQuery("")}
-                className="size-3.5 cursor-pointer"
-                type="button"
-              />
-            </InputGroupAddon>
-          )}
-        </InputGroup>
-        <div className="flex flex-wrap items-center gap-4 sm:justify-between">
-          <Select
-            defaultValue="5"
-            value={String(pageParams.size)}
-            onValueChange={(value) => setSize(Number(value))}
-          >
-            <SelectTrigger className="cursor-pointer">
-              <SelectValue defaultValue={pageParams.size} defaultChecked />
-            </SelectTrigger>
-            <SelectContent position="item-aligned">
-              <SelectGroup>
-                {ROWS_PER_PAGE.map((row) => {
-                  return (
-                    <SelectItem key={row} value={String(row)}>
-                      {row || 5}
-                    </SelectItem>
-                  );
-                })}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button
-            variant="secondary"
-            className="bg-primary/10 hover:bg-primary/20 cursor-pointer"
-          >
-            <Upload />
-            Export
-          </Button>
-          <CustomerCreateFormSheet />
-        </div>
-      </div>
-      <CustomerDataTable
-        columns={columns}
-        data={
-          isSearching
-            ? searchResult?.data || []
-            : customers?.data?.content || []
-        }
-        isLoading={isSearchFetching}
-        page={isSearching ? undefined : customers?.data?.page}
-        currentPage={pageParams.page}
-        onPageChange={setPage}
+    <div>
+      <PageHeader
+        title="Customers"
+        description="View your digital listahan: track regular suki, monitor outstanding utang, and record new payments."
       />
+      <div className="space-y-6">
+        <div className="flex gap-4 py-6 max-sm:flex-col sm:items-center sm:justify-between">
+          <InputGroup className="max-w-md">
+            <InputGroupInput
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <InputGroupAddon>
+              <Search />
+            </InputGroupAddon>
+            {searchQuery && (
+              <InputGroupAddon align="inline-end">
+                <X
+                  onClick={() => setSearchQuery("")}
+                  className="size-3.5 cursor-pointer"
+                  type="button"
+                />
+              </InputGroupAddon>
+            )}
+          </InputGroup>
+          <div className="flex flex-wrap items-center gap-4 sm:justify-between">
+            <Select
+              defaultValue="5"
+              value={String(pageParams.size)}
+              onValueChange={(value) => setSize(Number(value))}
+            >
+              <SelectTrigger className="cursor-pointer">
+                <SelectValue defaultValue={pageParams.size} defaultChecked />
+              </SelectTrigger>
+              <SelectContent position="item-aligned">
+                <SelectGroup>
+                  {ROWS_PER_PAGE.map((row) => {
+                    return (
+                      <SelectItem key={row} value={String(row)}>
+                        {row || 5}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button
+              variant="secondary"
+              className="bg-primary/10 hover:bg-primary/20 cursor-pointer"
+            >
+              <Upload />
+              Export
+            </Button>
+            <CustomerCreateFormSheet />
+          </div>
+        </div>
+        <CustomerDataTable
+          columns={columns}
+          data={
+            isSearching
+              ? searchResult?.data || []
+              : customers?.data?.content || []
+          }
+          isLoading={isSearchFetching}
+          page={isSearching ? undefined : customers?.data?.page}
+          currentPage={pageParams.page}
+          onPageChange={setPage}
+        />
+      </div>
     </div>
   );
 }
