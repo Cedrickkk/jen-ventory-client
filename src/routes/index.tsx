@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({
       );
 
       if (user?.id) {
-        throw redirect({ to: "/dashboard" });
+        throw redirect({ to: "/pos" });
       }
 
       return null;
@@ -59,7 +59,7 @@ function RouteComponent() {
       await loginAsync(value, {
         onSuccess: async () => {
           await navigate({
-            to: search.redirect ?? ("/dashboard" as AppRoutes),
+            to: search.redirect ?? ("/pos" as AppRoutes),
           });
         },
       });
