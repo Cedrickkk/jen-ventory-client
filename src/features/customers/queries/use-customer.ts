@@ -3,6 +3,9 @@ import {
   createCustomer,
   editCustomer,
   getAllCustomers,
+  getCustomerById,
+  getCustomerDebtHistory,
+  getCustomerTransactions,
   searchCustomer,
   toggleCustomerStatus,
 } from "@/features/customers/api/customer-api";
@@ -11,6 +14,7 @@ import type {
   EditCustomer,
 } from "@/features/customers/schema/customer";
 import {
+  keepPreviousData,
   queryOptions,
   useMutation,
   useQuery,
@@ -27,6 +31,14 @@ export const customerQueries = {
       queryFn: () => getAllCustomers(params),
       staleTime: 5 * 60 * 1000,
       retry: false,
+      placeholderData: keepPreviousData,
+    });
+  },
+  details: () => [...customerQueries.all(), "detail"] as const,
+  detail: (id: number) => {
+    return queryOptions({
+      queryKey: [...customerQueries.details(), id],
+      queryFn: () => getCustomerById(id),
     });
   },
   searches: () => [...customerQueries.all(), "search"] as const,
@@ -34,12 +46,33 @@ export const customerQueries = {
     return queryOptions({
       queryKey: [...customerQueries.searches(), query],
       queryFn: () => searchCustomer(query),
+      placeholderData: keepPreviousData,
+    });
+  },
+  transactions: (id: number) =>
+    [...customerQueries.detail(id).queryKey, "transactions"] as const,
+  transaction: (id: number) => {
+    return queryOptions({
+      queryKey: customerQueries.transactions(id),
+      queryFn: () => getCustomerTransactions(id),
+    });
+  },
+  debtHistories: (id: number) =>
+    [...customerQueries.detail(id).queryKey, "debt-history"] as const,
+  debtHistory: (id: number) => {
+    return queryOptions({
+      queryKey: customerQueries.debtHistories(id),
+      queryFn: () => getCustomerDebtHistory(id),
     });
   },
 };
 
 export const useGetCustomers = (params?: PageParamsSchema) => {
   return useQuery(customerQueries.list(params));
+};
+
+export const useGetCustomerById = (id: number) => {
+  return useQuery(customerQueries.detail(id));
 };
 
 export const useSearchCustomer = (searchQuery: string) => {
@@ -68,8 +101,12 @@ export const useEditCustomer = () => {
   return useMutation({
     mutationFn: ({ id, customer }: { id: number; customer: EditCustomer }) =>
       editCustomer(id, customer),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: customerQueries.detail(variables.id).queryKey,
+      });
       queryClient.invalidateQueries({ queryKey: customerQueries.lists() });
+      queryClient.invalidateQueries({ queryKey: customerQueries.searches() });
     },
   });
 };
@@ -80,8 +117,20 @@ export const useToggleCustomerStatus = () => {
   return useMutation({
     mutationFn: ({ id, active }: { id: number; active: boolean }) =>
       toggleCustomerStatus(id, active),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: customerQueries.lists() });
+      queryClient.invalidateQueries({
+        queryKey: customerQueries.detail(variables.id).queryKey,
+      });
+      queryClient.invalidateQueries({ queryKey: customerQueries.searches() });
     },
   });
+};
+
+export const useGetCustomerTransactions = (id: number) => {
+  return useQuery(customerQueries.transaction(id));
+};
+
+export const useGetCustomerDebtHistory = (id: number) => {
+  return useQuery(customerQueries.debtHistory(id));
 };

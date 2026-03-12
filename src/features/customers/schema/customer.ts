@@ -22,9 +22,21 @@ export const customerResponseSchema = z.object({
   ...customerSchema.shape,
 });
 
+export const customerTransactionSchema = z.object({
+  ...baseResponseDataSchema.shape,
+  representative: z.string().optional(),
+  totalAmount: z.number(),
+  amountPaid: z.number(),
+  debtAmount: z.number().optional(),
+  creditAmount: z.number().optional(),
+  itemCount: z.number(),
+});
+
 export const paginatedCustomerSchema = paginatedSchema(customerSchema);
 
 export type Customer = z.infer<typeof customerResponseSchema>;
 export type CreateCustomer = z.infer<typeof customerSchema>;
 export type EditCustomer = z.infer<typeof editCustomerSchema>;
+export type CustomerTransaction = z.infer<typeof customerTransactionSchema>;
 export type PaginatedCustomer = Paginated<Customer>;
+export type PaginatedCustomerTransaction = Paginated<CustomerTransaction>;
