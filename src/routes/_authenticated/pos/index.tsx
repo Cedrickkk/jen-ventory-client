@@ -64,7 +64,7 @@ function RouteComponent() {
   const items = useCartItems();
   const total = useCartTotal();
   const cartCount = useCartCount();
-  const { increment, decrement } = useCartActions();
+  const { increment, decrement, clearCart, remove } = useCartActions();
 
   return (
     <div>
@@ -163,7 +163,13 @@ function RouteComponent() {
                 </Badge>
               </div>
             </div>
-            <Button variant="destructive">Clear Cart</Button>
+            <Button
+              variant="destructive"
+              className="cursor-pointer"
+              onClick={clearCart}
+            >
+              Clear Cart
+            </Button>
           </div>
           <div className="flex flex-col gap-4">
             {items.map((item) => {
@@ -197,7 +203,11 @@ function RouteComponent() {
                       +
                     </Button>
                   </ButtonGroup>
-                  <Button variant="ghost" size="icon-lg">
+                  <Button
+                    variant="ghost"
+                    size="icon-lg"
+                    onClick={() => remove(item.variantId)}
+                  >
                     <Trash2 className="text-destructive" />
                   </Button>
                 </div>
