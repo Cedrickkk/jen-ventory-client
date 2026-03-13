@@ -1,6 +1,7 @@
 "use client";
 
 import { cva, type VariantProps } from "class-variance-authority";
+import Cookies from "js-cookie";
 import { PanelLeftIcon } from "lucide-react";
 import { Slot } from "radix-ui";
 import * as React from "react";
@@ -53,6 +54,17 @@ function useSidebar() {
   return context;
 }
 
+function getCookieValue(name: string) {
+  if (typeof document === "undefined") return null;
+  const cookies = Cookies.get();
+  for (const [key, value] of Object.entries(cookies)) {
+    if (key === name) {
+      return value === "true";
+    }
+  }
+  return null;
+}
+
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -71,7 +83,11 @@ function SidebarProvider({
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
-  const [_open, _setOpen] = React.useState(defaultOpen);
+  const [_open, _setOpen] = React.useState(() => {
+    const cookieValue = getCookieValue(SIDEBAR_COOKIE_NAME);
+    return cookieValue !== null ? cookieValue : defaultOpen;
+  });
+
   const open = openProp ?? _open;
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
@@ -83,7 +99,10 @@ function SidebarProvider({
       }
 
       // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+      Cookies.set(SIDEBAR_COOKIE_NAME, String(openState), {
+        path: "/",
+        expires: SIDEBAR_COOKIE_MAX_AGE,
+      });
     },
     [setOpenProp, open],
   );
