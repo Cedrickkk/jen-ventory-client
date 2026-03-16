@@ -48,8 +48,6 @@ export default function CustomerTransactionDetailsDialog({
     enabled: open,
   });
 
-  console.log(transaction);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
