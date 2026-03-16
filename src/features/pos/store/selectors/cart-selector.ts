@@ -1,5 +1,5 @@
+import { useAppStore } from "@/features/pos/store/store";
 import { useShallow } from "zustand/react/shallow";
-import { useAppStore } from "../store";
 
 export const useCartItems = () => useAppStore((s) => s.items);
 export const useCartCount = () => useAppStore((s) => s.items.length);
@@ -22,5 +22,6 @@ export const useCartActions = () =>
       increment: s.increment,
       decrement: s.decrement,
       clearCart: s.clearCart,
+      setQuantity: s.setQuantity,
     })),
   );
