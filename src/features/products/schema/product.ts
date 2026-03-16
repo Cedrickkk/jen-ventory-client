@@ -25,6 +25,7 @@ export const productVariantResponseSchema = z.object({
   ...baseResponseDataSchema.shape,
   ...productVariantSchema.shape,
   productId: z.number(),
+  productName: z.string(),
   stockQuantity: z.number(),
   active: z.boolean(),
 });
