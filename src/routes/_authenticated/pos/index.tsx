@@ -1,7 +1,5 @@
 import { PageHeader } from "@/components/page-header";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
 import {
   InputGroup,
   InputGroupAddon,
@@ -17,21 +15,16 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
-import {
-  useCartActions,
-  useCartCount,
-  useCartItems,
-  useCartTotal,
-} from "@/features/pos/store/selectors/cart-selector";
+import CartPanel from "@/features/pos/components/cart/cart-panel";
+import PosProductVariantDialog from "@/features/pos/components/product/pos-product-variant-dialog";
 import ProductList from "@/features/products/components/product-list";
 import {
   useGetProducts,
   useSearchProduct,
 } from "@/features/products/queries/use-product";
 import { getPageNumbers, usePagination } from "@/hooks/use-pagination";
-import { formatCurrency } from "@/lib/currency";
 import { createFileRoute } from "@tanstack/react-router";
-import { LoaderCircle, Search, ShoppingCart, Trash2 } from "lucide-react";
+import { LoaderCircle, Search } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
 
 export const Route = createFileRoute("/_authenticated/pos/")({
@@ -61,15 +54,10 @@ function RouteComponent() {
     setPage(page);
   };
 
-  const items = useCartItems();
-  const total = useCartTotal();
-  const cartCount = useCartCount();
-  const { increment, decrement, clearCart, remove } = useCartActions();
-
   return (
     <div>
       <Separator className="mb-6" />
-      <div className="grid min-h-screen items-start gap-8 lg:grid-cols-[2fr_auto_1fr]">
+      <div className="grid h-[calc(100vh-8rem)] items-start gap-8 lg:grid-cols-[2fr_auto_1fr]">
         <div>
           <div className="flex items-center justify-between">
             <PageHeader
@@ -142,9 +130,19 @@ function RouteComponent() {
                 </div>
               ) : null}
               {isSearching ? (
-                <ProductList products={searchResult?.data || []} />
+                <ProductList
+                  products={searchResult?.data || []}
+                  renderDialog={(props) => (
+                    <PosProductVariantDialog {...props} />
+                  )}
+                />
               ) : (
-                <ProductList products={products} />
+                <ProductList
+                  products={products}
+                  renderDialog={(props) => (
+                    <PosProductVariantDialog {...props} />
+                  )}
+                />
               )}
             </div>
           </div>
@@ -153,68 +151,8 @@ function RouteComponent() {
           orientation="vertical"
           className="mx-4 hidden h-full lg:block"
         />
-        <div className="min-h-full">
-          <div className="mb-6 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <ShoppingCart className="text-primary" />
-                <Badge className="absolute -top-2.5 -right-2.5 h-5 min-w-5 px-1 tabular-nums">
-                  {cartCount}
-                </Badge>
-              </div>
-            </div>
-            <Button
-              variant="destructive"
-              className="cursor-pointer"
-              onClick={clearCart}
-            >
-              Clear Cart
-            </Button>
-          </div>
-          <div className="flex flex-col gap-4">
-            {items.map((item) => {
-              const subtotal = item.quantity * item.unitPrice;
-              return (
-                <div
-                  key={item.variantId}
-                  className="grid grid-cols-[1fr_auto_auto] items-center gap-4"
-                >
-                  <div className="text-muted-foreground text-sm">
-                    <div>SKU: {item.sku}</div>
-                    <div>QTY: {item.quantity}</div>
-                    <div>Subtotal: {formatCurrency(String(subtotal))}</div>
-                  </div>
-                  <ButtonGroup>
-                    <Button
-                      onClick={() => decrement(item.variantId)}
-                      size="icon-lg"
-                      variant="outline"
-                    >
-                      -
-                    </Button>
-                    <Button size="icon-lg" variant="outline">
-                      {item.quantity}
-                    </Button>
-                    <Button
-                      onClick={() => increment(item.variantId)}
-                      size="icon-lg"
-                      variant="outline"
-                    >
-                      +
-                    </Button>
-                  </ButtonGroup>
-                  <Button
-                    variant="ghost"
-                    size="icon-lg"
-                    onClick={() => remove(item.variantId)}
-                  >
-                    <Trash2 className="text-destructive" />
-                  </Button>
-                </div>
-              );
-            })}
-          </div>
-          <p>TOTAL: {formatCurrency(String(total))}</p>
+        <div className="sticky top-0 h-[calc(100vh-4rem)] overflow-hidden">
+          <CartPanel />
         </div>
       </div>
     </div>

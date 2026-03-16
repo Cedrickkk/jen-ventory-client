@@ -1,13 +1,20 @@
 import ProductCard from "@/features/products/components/product-card";
 import type { Product } from "@/features/products/schema/product";
 import { useState } from "react";
-import ProductVariantDialog from "./product-variant-dialog";
 
 type ProductListProps = {
   products: Array<Product>;
+  renderDialog: (props: {
+    productId: number | null;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  }) => React.ReactNode;
 };
 
-export default function ProductList({ products }: ProductListProps) {
+export default function ProductList({
+  products,
+  renderDialog,
+}: ProductListProps) {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null,
   );
@@ -23,13 +30,13 @@ export default function ProductList({ products }: ProductListProps) {
           />
         ))}
       </div>
-      <ProductVariantDialog
-        productId={selectedProductId}
-        open={selectedProductId !== null}
-        onOpenChange={(open) => {
+      {renderDialog({
+        productId: selectedProductId,
+        open: selectedProductId !== null,
+        onOpenChange: (open) => {
           if (!open) setSelectedProductId(null);
-        }}
-      />
+        },
+      })}
     </>
   );
 }

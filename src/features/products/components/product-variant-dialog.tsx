@@ -1,6 +1,6 @@
+import ProductVariantCard from "@/features/products/components/product-variant-card";
+import { useGetProductVariants } from "@/features/products/queries/use-product";
 import { usePagination } from "@/hooks/use-pagination";
-import { useGetProductVariants } from "../queries/use-product";
-import ProductVariantCard from "./product-variant-card";
 
 import {
   Dialog,
@@ -11,17 +11,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { ProductVariant } from "@/features/products/schema/product";
+import type { ReactNode } from "react";
 
-type ProductVariantDialogProps = {
+export type ProductVariantDialogProps = {
   productId: number | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  renderVariant: (variant: ProductVariant) => ReactNode;
 };
 
 export default function ProductVariantDialog({
   productId,
   open,
   onOpenChange,
+  renderVariant,
 }: ProductVariantDialogProps) {
   const { pageParams } = usePagination({
     initialSize: 10,
@@ -42,11 +46,13 @@ export default function ProductVariantDialog({
           <ScrollArea className="flex max-h-full flex-col overflow-hidden">
             <DialogDescription className="w-full space-y-4 p-4" asChild>
               <div>
-                {productVariants?.data?.content.map((variant) => {
-                  return (
+                {productVariants?.data?.content.map((variant) =>
+                  renderVariant ? (
+                    renderVariant(variant)
+                  ) : (
                     <ProductVariantCard key={variant.id} variant={variant} />
-                  );
-                })}
+                  ),
+                )}
               </div>
             </DialogDescription>
           </ScrollArea>
