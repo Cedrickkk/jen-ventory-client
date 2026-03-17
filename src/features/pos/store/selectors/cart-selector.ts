@@ -17,11 +17,11 @@ export const useIsInCart = (variantId: number) =>
 export const useCartActions = () =>
   useAppStore(
     useShallow((s) => ({
-      add: s.add,
-      remove: s.remove,
-      increment: s.increment,
-      decrement: s.decrement,
+      add: s.addItem,
+      remove: s.removeItem,
+      increment: s.incrementItem,
+      decrement: s.decrementItem,
       clearCart: s.clearCart,
-      setQuantity: s.setQuantity,
+      setQuantity: s.setItemQuantity,
     })),
   );

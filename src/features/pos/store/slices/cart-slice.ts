@@ -18,12 +18,12 @@ type CartState = {
 };
 
 type CartActions = {
-  add: (item: CartItem) => void;
-  remove: (variantId: number) => void;
-  increment: (variantId: number) => void;
-  decrement: (variantId: number) => void;
+  addItem: (item: CartItem) => void;
+  removeItem: (variantId: number) => void;
+  incrementItem: (variantId: number) => void;
+  decrementItem: (variantId: number) => void;
   clearCart: () => void;
-  setQuantity: (variantId: number, quantity: number) => void;
+  setItemQuantity: (variantId: number, quantity: number) => void;
 };
 
 export type CartSlice = CartState & CartActions;
@@ -39,7 +39,7 @@ export const createCartSlice: StateCreator<
   CartSlice
 > = (set) => ({
   ...initialState,
-  add: (item) =>
+  addItem: (item) =>
     set((state) => {
       const existing = state.items.find((i) => i.variantId === item.variantId);
       if (existing) {
@@ -48,18 +48,18 @@ export const createCartSlice: StateCreator<
         state.items.push({ ...item, quantity: 1 });
       }
     }),
-  remove: (variantId) =>
+  removeItem: (variantId) =>
     set((state) => {
       state.items = state.items.filter((i) => i.variantId !== variantId);
     }),
-  increment: (variantId) =>
+  incrementItem: (variantId) =>
     set((state) => {
       const item = state.items.find((i) => i.variantId === variantId);
       if (item) {
         item.quantity += 1;
       }
     }),
-  decrement: (variantId) =>
+  decrementItem: (variantId) =>
     set((state) => {
       const item = state.items.find((i) => i.variantId === variantId);
       if (!item) return;
@@ -70,7 +70,7 @@ export const createCartSlice: StateCreator<
       }
     }),
   clearCart: () => set(() => initialState),
-  setQuantity: (variantId, quantity) =>
+  setItemQuantity: (variantId, quantity) =>
     set((state) => {
       const item = state.items.find((i) => i.variantId === variantId);
       if (!item) return;
