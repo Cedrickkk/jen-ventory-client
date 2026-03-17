@@ -24,7 +24,7 @@ import {
 } from "@/features/products/queries/use-product";
 import { getPageNumbers, usePagination } from "@/hooks/use-pagination";
 import { createFileRoute } from "@tanstack/react-router";
-import { LoaderCircle, Search } from "lucide-react";
+import { LoaderCircle, Search, X } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
 
 export const Route = createFileRoute("/_authenticated/pos/")({
@@ -74,6 +74,15 @@ function RouteComponent() {
                 <InputGroupAddon>
                   <Search />
                 </InputGroupAddon>
+                {searchQuery && (
+                  <InputGroupAddon align="inline-end">
+                    <X
+                      onClick={() => setSearchQuery("")}
+                      className="size-3.5 cursor-pointer"
+                      type="button"
+                    />
+                  </InputGroupAddon>
+                )}
               </InputGroup>
               <Button>Utang</Button>
               <Button>GCash</Button>
