@@ -14,8 +14,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CustomerDebtHistoryTabContent from "@/features/customers/components/tabs/customer-debt-history-tab-content";
 import CustomerGCashHistoryTabContent from "@/features/customers/components/tabs/customer-gcash-history-tab-content";
 import CustomerTransactionsTabContent from "@/features/customers/components/tabs/customer-transactions-tab-content";
-import { useGetCustomerById } from "@/features/customers/queries/use-customer";
+import {
+  useGetCustomerById,
+  useGetCustomerDebtSummary,
+} from "@/features/customers/queries/use-customer";
 import StatisticsCard from "@/features/dashboard/components/statistics-card";
+import { formatCurrency } from "@/lib/currency";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
@@ -42,10 +46,13 @@ const tabs = [
 function RouteComponent() {
   const { customerId } = Route.useParams();
   const { data: customer } = useGetCustomerById(Number(customerId));
+  const { data: debtSummary } = useGetCustomerDebtSummary(Number(customerId));
   const [tab, setTab] = useQueryState(
     "tab",
     parseAsString.withDefault("transactions"),
   );
+
+  console.log(debtSummary);
 
   return (
     <div className="mt-9 space-y-6">
@@ -63,7 +70,7 @@ function RouteComponent() {
       <div className="flex flex-col items-stretch lg:flex-row lg:gap-4">
         <StatisticsCard
           title="Total Spent"
-          value="₱3,500.00"
+          value={formatCurrency(String(debtSummary?.data?.totalPaid))}
           subtitle="Lorem ipsum dolor sit amet consectetur."
           className="flex-1 border-none shadow-none"
         />
@@ -71,21 +78,21 @@ function RouteComponent() {
         <Separator orientation="vertical" className="h-auto!" />
         <StatisticsCard
           title="Total Debts"
-          value="₱0"
+          value={formatCurrency(String(debtSummary?.data?.totalDebt))}
           subtitle="Lorem ipsum dolor sit amet consectetur."
           className="flex-1 border-none shadow-none"
         />
         <Separator orientation="vertical" className="h-auto!" />
         <StatisticsCard
           title="Total Transactions"
-          value="34"
+          value={formatCurrency(String(debtSummary?.data?.totalPaid))}
           subtitle="Lorem ipsum dolor sit amet consectetur."
           className="flex-1 border-none shadow-none"
         />
         <Separator orientation="vertical" className="h-auto!" />
         <StatisticsCard
           title="Store Credits"
-          value="₱340.00"
+          value={formatCurrency(String(debtSummary?.data?.totalCredit))}
           subtitle="Lorem ipsum dolor sit amet consectetur."
           className="flex-1 border-none shadow-none"
         />

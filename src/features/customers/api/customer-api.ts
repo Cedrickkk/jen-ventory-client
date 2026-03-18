@@ -11,7 +11,7 @@ import type {
   PaginatedCustomerTransaction,
 } from "@/features/customers/schema/customer";
 import type { PaginatedGCashServiceLog } from "@/features/gcash/schema/gcash";
-import type { PaginatedDebt } from "@/features/transactions/schema/debt";
+import type { DebtSummary } from "@/features/transactions/schema/debt";
 import { api } from "@/lib/api";
 import axios from "axios";
 
@@ -151,9 +151,26 @@ export const toggleCustomerStatus = async (id: number, active: boolean) => {
   }
 };
 
+export const getCustomerDebtSummary = async (id: number) => {
+  try {
+    const { data } = await api.get<SuccessApiResponse<DebtSummary>>(
+      `/customers/${id}/debt/summary`,
+    );
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
 export const getCustomerDebtHistory = async (id: number) => {
   try {
-    const { data } = await api.get<SuccessApiResponse<PaginatedDebt>>(
+    const { data } = await api.get<SuccessApiResponse<DebtSummary>>(
       `/customers/${id}/debt/history`,
     );
     return data;

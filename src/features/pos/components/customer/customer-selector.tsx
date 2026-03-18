@@ -18,7 +18,7 @@ import {
   useSelectedCustomer,
 } from "@/features/pos/store/selectors/customer-selector";
 import { cn } from "@/lib/utils";
-import { Check, LoaderCircle, Trash2 } from "lucide-react";
+import { Check, LoaderCircle, Trash2, UserIcon } from "lucide-react";
 import { useState } from "react";
 
 export default function CustomerSelector() {
@@ -31,86 +31,82 @@ export default function CustomerSelector() {
   const { setCustomer, clearCustomer } = useCustomerActions();
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <div className="inline-flex w-fit -space-x-px rounded-md shadow-xs rtl:space-x-reverse">
-          <Button
-            variant="outline"
-            className="rounded-none rounded-l-md shadow-none focus-visible:z-10"
-            asChild
-          >
-            <span className="truncate">
-              {selectedCustomer ? selectedCustomer.name : "Walk-in"}
-            </span>
-          </Button>
-          {selectedCustomer && (
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-none rounded-r-md shadow-none focus-visible:z-10"
-              onClick={() => clearCustomer()}
-            >
-              <div>
-                <Trash2 className="text-destructive" />
-              </div>
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-2">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2">
+              <UserIcon />
+              <span className="max-w-36 truncate">
+                {selectedCustomer ? selectedCustomer.name : "Walk-in"}
+              </span>
             </Button>
-          )}
-        </div>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-[--radix-popover-trigger-width] p-0"
-        align="end"
-      >
-        <Command shouldFilter={false}>
-          <CommandInput
-            placeholder="Type to search customer..."
-            value={searchQuery}
-            onValueChange={setSearchQuery}
-            className="w-96"
-          />
-          <CommandList className="w-full min-w-(--radix-popover-trigger-width) p-0">
-            {isSearchFetching && (
-              <div className="py-6 text-center text-sm">
-                <LoaderCircle className="mx-auto h-4 w-4 animate-spin" />
-              </div>
-            )}
-            {!isSearchFetching && searchQuery.length < 2 && (
-              <CommandEmpty>Search and select customer...</CommandEmpty>
-            )}
-            {!isSearchFetching &&
-              searchQuery.length >= 2 &&
-              customersResult?.length === 0 && (
-                <CommandEmpty>No customer found.</CommandEmpty>
-              )}
-            {!isSearchFetching && (customersResult?.length ?? 0) > 0 && (
-              <CommandGroup>
-                {customersResult?.map((customer) => (
-                  <CommandItem
-                    key={customer.id}
-                    value={String(customer.id)}
-                    onSelect={() => {
-                      setCustomer(customer);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "h-4 w-4",
-                        selectedCustomer?.id === customer.id
-                          ? "opacity-100"
-                          : "opacity-0",
-                      )}
-                    />
-                    <div className="flex w-full flex-col">
-                      <p className="font-medium">{customer?.name}</p>
-                    </div>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-[--radix-popover-trigger-width] p-0"
+            align="end"
+          >
+            <Command shouldFilter={false}>
+              <CommandInput
+                placeholder="Search customer..."
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+                className="w-96"
+              />
+              <CommandList className="w-full min-w-(--radix-popover-trigger-width) p-0">
+                {isSearchFetching && (
+                  <div className="py-6 text-center">
+                    <LoaderCircle className="mx-auto h-4 w-4 animate-spin" />
+                  </div>
+                )}
+                {!isSearchFetching && searchQuery.length < 2 && (
+                  <CommandEmpty>Type to search...</CommandEmpty>
+                )}
+                {!isSearchFetching &&
+                  searchQuery.length >= 2 &&
+                  customersResult?.length === 0 && (
+                    <CommandEmpty>No customer found.</CommandEmpty>
+                  )}
+                {!isSearchFetching && (customersResult?.length ?? 0) > 0 && (
+                  <CommandGroup>
+                    {customersResult?.map((customer) => (
+                      <CommandItem
+                        key={customer.id}
+                        value={String(customer.id)}
+                        onSelect={() => {
+                          setCustomer(customer);
+                          setOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "h-4 w-4",
+                            selectedCustomer?.id === customer.id
+                              ? "opacity-100"
+                              : "opacity-0",
+                          )}
+                        />
+                        <span className="font-medium">{customer.name}</span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        {selectedCustomer && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 shrink-0"
+            onClick={clearCustomer}
+          >
+            <Trash2 className="text-destructive size-4" />
+          </Button>
+        )}
+      </div>
+    </div>
   );
 }

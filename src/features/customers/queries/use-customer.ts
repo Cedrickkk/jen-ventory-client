@@ -5,6 +5,7 @@ import {
   getAllCustomers,
   getCustomerById,
   getCustomerDebtHistory,
+  getCustomerDebtSummary,
   getCustomerGCashHistory,
   getCustomerTransactions,
   searchCustomer,
@@ -58,12 +59,22 @@ export const customerQueries = {
       queryFn: () => getCustomerTransactions(id),
     });
   },
+  debtSummaries: (id: number) =>
+    [...customerQueries.detail(id).queryKey, "debt-summary"] as const,
+  debtSummary: (id: number | null) => {
+    return queryOptions({
+      queryKey: customerQueries.debtSummaries(id!),
+      queryFn: () => getCustomerDebtSummary(id!),
+      enabled: id !== null,
+    });
+  },
   debtHistories: (id: number) =>
     [...customerQueries.detail(id).queryKey, "debt-history"] as const,
-  debtHistory: (id: number) => {
+  debtHistory: (id: number | null) => {
     return queryOptions({
-      queryKey: customerQueries.debtHistories(id),
-      queryFn: () => getCustomerDebtHistory(id),
+      queryKey: customerQueries.debtHistories(id!),
+      queryFn: () => getCustomerDebtHistory(id!),
+      enabled: id !== null,
     });
   },
   gCashHistories: (id: number) =>
@@ -140,8 +151,12 @@ export const useGetCustomerTransactions = (id: number) => {
   return useQuery(customerQueries.transaction(id));
 };
 
-export const useGetCustomerDebtHistory = (id: number) => {
+export const useGetCustomerDebtHistory = (id: number | null) => {
   return useQuery(customerQueries.debtHistory(id));
+};
+
+export const useGetCustomerDebtSummary = (id: number | null) => {
+  return useQuery(customerQueries.debtSummary(id));
 };
 
 export const useGetCustomerGCashHistory = (id: number) => {

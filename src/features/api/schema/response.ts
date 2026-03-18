@@ -2,8 +2,8 @@ import { z } from "zod/v3";
 
 export const baseResponseDataSchema = z.object({
   id: z.number(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export const baseApiResponseSchema = z.object({

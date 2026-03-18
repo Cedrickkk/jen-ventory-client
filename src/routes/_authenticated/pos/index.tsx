@@ -15,7 +15,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
-import CartPanel from "@/features/pos/components/cart/cart-panel";
+import PosRightPanel from "@/features/pos/components/pos-right-panel";
 import PosProductVariantDialog from "@/features/pos/components/product/pos-product-variant-dialog";
 import ProductList from "@/features/products/components/product-list";
 import {
@@ -160,9 +160,8 @@ function RouteComponent() {
           orientation="vertical"
           className="mx-4 hidden h-full lg:block"
         />
-        <div className="sticky top-0 h-[calc(100vh-4rem)] overflow-hidden">
-          <CartPanel />
-        </div>
+
+        <PosRightPanel />
       </div>
     </div>
   );

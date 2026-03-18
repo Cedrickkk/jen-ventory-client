@@ -3,11 +3,11 @@ import { baseResponseDataSchema } from "@/features/api/schema/response";
 import z from "zod/v3";
 
 export const transactionSchema = z.object({
-  customerId: z.string().optional(),
-  representative: z.string().optional(),
-  notes: z.string().optional(),
-  allowDebt: z.boolean().optional().default(false),
-  storeChangeAsCredit: z.boolean().optional().default(false),
+  customerId: z.number().nullable(),
+  representative: z.string().nullable(),
+  notes: z.string().nullable(),
+  allowDebt: z.boolean().nullable().default(false),
+  storeChangeAsCredit: z.boolean().nullable().default(false),
 });
 
 export const transactionItemSchema = z.object({
@@ -18,7 +18,7 @@ export const transactionItemSchema = z.object({
 });
 
 export const transactionItemResponseSchema = z.object({
-  ...baseResponseDataSchema.shape,
+  ...baseResponseDataSchema.omit({ createdAt: true, updatedAt: true }).shape,
   ...transactionItemSchema.omit({ transactionId: true }).shape,
   productVariantName: z.string(),
   sku: z.string(),
@@ -34,12 +34,12 @@ export const transactionPaymentSchema = z.object({
 });
 
 export const transactionPaymentResponseSchema = z.object({
-  ...baseResponseDataSchema.shape,
+  ...baseResponseDataSchema.omit({ updatedAt: true }).shape,
   ...transactionPaymentSchema.omit({ transactionId: true }).shape,
 });
 
 export const transactionResponseSchema = z.object({
-  ...baseResponseDataSchema.shape,
+  ...baseResponseDataSchema.omit({ updatedAt: true }).shape,
   ...transactionSchema.pick({
     customerId: true,
     notes: true,
