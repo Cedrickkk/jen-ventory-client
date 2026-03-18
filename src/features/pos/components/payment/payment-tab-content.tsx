@@ -1,53 +1,44 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import PaymentForm from "@/features/pos/components/payment/payment-form";
 import PaymentSummary from "@/features/pos/components/payment/payment-summary";
 import TransactionOptions from "@/features/pos/components/payment/transaction-option";
-import { useSubmitTransaction } from "@/features/pos/hooks/use-submit-transaction";
 import { useCartItems } from "@/features/pos/store/selectors/cart-selector";
-import {
-  useCanSubmit,
-  useIsSubmitting,
-} from "@/features/pos/store/selectors/ui-selector";
-import {
-  CheckIcon,
-  LoaderCircle,
-  ShoppingCart,
-  TriangleAlertIcon,
-} from "lucide-react";
+import { useCanSubmit } from "@/features/pos/store/selectors/ui-selector";
+import { useCreatePosTransaction } from "@/features/transactions/queries/use-transaction";
+import { CheckIcon, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 
 export default function PaymentTabContent() {
   const items = useCartItems();
 
-  const submitTransaction = useSubmitTransaction();
+  const { mutateAsync: createPosTransactionAsync, isPending } =
+    useCreatePosTransaction();
   const canSubmit = useCanSubmit();
-  const isSubmitting = useIsSubmitting();
 
   const handleSubmit = async () => {
-    try {
-      await submitTransaction(null);
-      toast.custom(() => (
-        <Alert className="border-none bg-green-600 font-sans text-white dark:bg-green-400">
-          <CheckIcon />
-          <AlertTitle>Transaction has been successful.</AlertTitle>
-        </Alert>
-      ));
-    } catch (error) {
-      toast.custom(() => (
-        <Alert className="bg-destructive dark:bg-destructive/60 border-none text-white">
-          <TriangleAlertIcon />
-          <AlertTitle>Couldn&apos;t save changes</AlertTitle>
-          <AlertDescription className="text-white/80">
-            {error
-              ? String(error)
-              : "Something went wrong. Please contact support."}
-          </AlertDescription>
-        </Alert>
-      ));
-      console.error(error);
-    }
+    await createPosTransactionAsync(null, {
+      onSuccess: () => {
+        toast.custom(() => (
+          <Alert className="border-none bg-green-600 font-sans text-white dark:bg-green-400">
+            <CheckIcon />
+            <AlertTitle>Transaction created!</AlertTitle>
+          </Alert>
+        ));
+      },
+    });
   };
 
   if (items.length === 0) {
@@ -72,20 +63,26 @@ export default function PaymentTabContent() {
       <Separator />
       <PaymentForm />
       <PaymentSummary />
-      <Button
-        onClick={handleSubmit}
-        disabled={!canSubmit || isSubmitting}
-        className="w-full"
-      >
-        {isSubmitting ? (
-          <>
-            <LoaderCircle className="mr-2 size-4 animate-spin" />
-            Processing...
-          </>
-        ) : (
-          "Submit Transaction"
-        )}
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button disabled={!canSubmit || isPending}>Submit Transaction</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will finalize the transaction and clear the cart. This action
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSubmit}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

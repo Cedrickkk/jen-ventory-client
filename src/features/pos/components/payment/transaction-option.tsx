@@ -40,7 +40,7 @@ export default function TransactionOptions() {
           id="allow-debt"
           checked={allowDebt}
           onCheckedChange={toggleAllowDebt}
-          disabled={!isDebt}
+          disabled={!isDebt || isWalkIn}
         />
       </div>
 
@@ -73,7 +73,7 @@ export default function TransactionOptions() {
           id="store-credit"
           checked={storeChangeAsCredit}
           onCheckedChange={toggleStoreCredit}
-          disabled={!isOverPaid}
+          disabled={!isOverPaid || isWalkIn}
         />
       </div>
     </div>

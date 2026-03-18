@@ -22,7 +22,7 @@ export type CustomerSlice = CustomerState & CustomerActions;
 
 const initialState: CustomerState = {
   selectedCustomer: null,
-  representativeName: "",
+  representativeName: "Walk-in",
 };
 
 export const createCustomerSlice: StateCreator<
@@ -35,12 +35,10 @@ export const createCustomerSlice: StateCreator<
   setCustomer: (customer) =>
     set((s) => {
       s.selectedCustomer = customer;
-      s.representativeName = "";
     }),
   setRepresentativeName: (name) =>
     set((s) => {
       s.representativeName = name;
-      s.selectedCustomer = null;
     }),
   clearCustomer: () => set(() => initialState),
 });

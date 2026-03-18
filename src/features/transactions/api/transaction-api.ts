@@ -4,6 +4,7 @@ import type {
   SuccessApiResponse,
 } from "@/features/api/schema/response";
 import type {
+  CreateTransaction,
   PaginatedTransaction,
   Transaction,
 } from "@/features/transactions/schema/transaction";
@@ -43,6 +44,24 @@ export const getTransactionById = async (id: number) => {
   try {
     const { data } = await api.get<SuccessApiResponse<Transaction>>(
       `/transactions/${id}`,
+    );
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const createTransaction = async (transaction: CreateTransaction) => {
+  try {
+    const { data } = await api.post<SuccessApiResponse<Transaction>>(
+      `/transactions`,
+      transaction,
     );
     return data;
   } catch (error: unknown) {

@@ -52,8 +52,6 @@ function RouteComponent() {
     parseAsString.withDefault("transactions"),
   );
 
-  console.log(debtSummary);
-
   return (
     <div className="mt-9 space-y-6">
       <div className="flex items-center gap-4">

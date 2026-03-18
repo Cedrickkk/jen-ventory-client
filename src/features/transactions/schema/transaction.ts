@@ -45,7 +45,7 @@ export const transactionResponseSchema = z.object({
     notes: true,
     representative: true,
   }).shape,
-  customerName: z.string().optional(),
+  customerName: z.string().nullable(),
   totalAmount: z.number(),
   items: z.array(transactionItemResponseSchema).default([]),
   payments: z.array(transactionPaymentResponseSchema).default([]),
