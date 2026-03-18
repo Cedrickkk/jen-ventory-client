@@ -59,20 +59,18 @@ export const customerQueries = {
       queryFn: () => getCustomerTransactions(id),
     });
   },
-  debtSummaries: (id: number) =>
-    [...customerQueries.detail(id).queryKey, "debt-summary"] as const,
+  debts: (id: number) =>
+    [...customerQueries.detail(id).queryKey, "debts"] as const,
   debtSummary: (id: number | null) => {
     return queryOptions({
-      queryKey: customerQueries.debtSummaries(id!),
+      queryKey: customerQueries.debts(id!),
       queryFn: () => getCustomerDebtSummary(id!),
       enabled: id !== null,
     });
   },
-  debtHistories: (id: number) =>
-    [...customerQueries.detail(id).queryKey, "debt-history"] as const,
   debtHistory: (id: number | null) => {
     return queryOptions({
-      queryKey: customerQueries.debtHistories(id!),
+      queryKey: customerQueries.debts(id!),
       queryFn: () => getCustomerDebtHistory(id!),
       enabled: id !== null,
     });
