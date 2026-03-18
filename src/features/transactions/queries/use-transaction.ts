@@ -1,6 +1,8 @@
 import type { PageParamsSchema } from "@/features/api/schema/pagination";
+import { customerQueries } from "@/features/customers/queries/use-customer";
 import { paymentMethodSchema } from "@/features/pos/store/slices/payment-slice";
 import { useAppStore } from "@/features/pos/store/store";
+import { productQueries } from "@/features/products/queries/use-product";
 import {
   createTransaction,
   getAllTransactions,
@@ -133,10 +135,23 @@ export const useCreatePosTransaction = () => {
     onMutate: () => {
       useAppStore.getState().setSubmitting(true);
     },
-    onSuccess: (tx) => {
+    onSuccess: (data) => {
       const s = useAppStore.getState();
-      s.setLastTransaction(tx);
+      const customerId = s.selectedCustomer?.id ?? null;
+
+      s.setLastTransaction(data);
       useAppStore.getState().resetPOS();
+
+      if (customerId !== null) {
+        queryClient.invalidateQueries({
+          queryKey: customerQueries.detail(customerId).queryKey,
+        });
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: productQueries.lists(),
+      });
+
       queryClient.invalidateQueries({
         queryKey: transactionQueries.lists(),
       });
