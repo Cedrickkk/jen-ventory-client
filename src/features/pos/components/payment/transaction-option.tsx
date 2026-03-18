@@ -1,5 +1,11 @@
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  useCustomerActions,
+  useRepresentativeName,
+  useSelectedCustomer,
+} from "@/features/pos/store/selectors/customer-selector";
 import {
   useAllowDebt,
   useOptionActions,
@@ -13,10 +19,11 @@ export default function TransactionOptions() {
   const storeChangeAsCredit = useStoreChangeAsCredit();
   const { toggleAllowDebt, toggleStoreCredit } = useOptionActions();
 
-  const showAllowDebt = isDebt || allowDebt;
-  const showStoreCredit = isOverPaid || storeChangeAsCredit;
+  const selectedCustomer = useSelectedCustomer();
+  const representativeName = useRepresentativeName();
+  const { setRepresentativeName } = useCustomerActions();
 
-  if (!showAllowDebt && !showStoreCredit) return null;
+  const isWalkIn = selectedCustomer === null;
 
   return (
     <div className="flex flex-col gap-3">
@@ -34,6 +41,22 @@ export default function TransactionOptions() {
           checked={allowDebt}
           onCheckedChange={toggleAllowDebt}
           disabled={!isDebt}
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="rep-name" className="text-xs font-medium">
+          {isWalkIn
+            ? "Walk-in Customer Name (optional)"
+            : "Representative Name (optional)"}
+        </Label>
+        <Input
+          id="rep-name"
+          placeholder={
+            isWalkIn ? "e.g. Juan dela Cruz" : "e.g. picking up on behalf"
+          }
+          value={representativeName}
+          onChange={(e) => setRepresentativeName(e.target.value)}
         />
       </div>
 
