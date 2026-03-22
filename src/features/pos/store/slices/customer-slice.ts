@@ -35,6 +35,7 @@ export const createCustomerSlice: StateCreator<
   setCustomer: (customer) =>
     set((s) => {
       s.selectedCustomer = customer;
+      s.representativeName = "";
     }),
   setRepresentativeName: (name) =>
     set((s) => {
