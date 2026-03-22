@@ -63,20 +63,20 @@ export const customerQueries = {
     [...customerQueries.detail(id).queryKey, "debts"] as const,
   debtSummary: (id: number | null) => {
     return queryOptions({
-      queryKey: customerQueries.debts(id!),
+      queryKey: [...customerQueries.debts(id!), "summary"],
       queryFn: () => getCustomerDebtSummary(id!),
       enabled: id !== null,
     });
   },
   debtHistory: (id: number | null) => {
     return queryOptions({
-      queryKey: customerQueries.debts(id!),
+      queryKey: [...customerQueries.debts(id!), "history"],
       queryFn: () => getCustomerDebtHistory(id!),
       enabled: id !== null,
     });
   },
   gCashHistories: (id: number) =>
-    [...customerQueries.detail(id).queryKey, "gcash-history"] as const,
+    [...customerQueries.detail(id).queryKey, id, "gcash"] as const,
   gCashHistory: (id: number) => {
     return queryOptions({
       queryKey: customerQueries.gCashHistories(id),

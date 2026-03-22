@@ -141,10 +141,9 @@ export const useCreatePosTransaction = () => {
 
       s.setLastTransaction(data);
       useAppStore.getState().resetPOS();
-
       if (customerId !== null) {
         queryClient.invalidateQueries({
-          queryKey: customerQueries.detail(customerId).queryKey,
+          queryKey: [...customerQueries.details(), customerId],
         });
       }
 
