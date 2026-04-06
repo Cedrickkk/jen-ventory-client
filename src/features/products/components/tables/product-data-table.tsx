@@ -130,8 +130,7 @@ export function ProductDataTable<TData, TValue>({
       </Table>
       <CardFooter className="flex justify-between">
         <p className="text-muted-foreground w-full text-sm">
-          Showing page {(page?.number ?? 0) + 1} of {page?.totalElements}{" "}
-          entries
+          Showing page {(page?.number ?? 0) + 1} of {page?.totalPages} entries
         </p>
         <Pagination className="flex justify-end">
           <PaginationContent>
