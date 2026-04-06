@@ -1,4 +1,3 @@
-import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -64,76 +63,70 @@ function RouteComponent() {
   const isSearching = searchQuery.length >= 3;
 
   return (
-    <div>
-      <PageHeader
-        title="Products"
-        description="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum culpa autem obcaecati?"
-      />
-      <div className="space-y-6">
-        <div className="flex gap-4 py-6 max-sm:flex-col sm:items-center sm:justify-between">
-          <InputGroup className="max-w-md">
-            <InputGroupInput
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <InputGroupAddon>
-              <Search />
+    <div className="space-y-6">
+      <div className="flex gap-4 py-6 max-sm:flex-col sm:items-center sm:justify-between">
+        <InputGroup className="max-w-md">
+          <InputGroupInput
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <InputGroupAddon>
+            <Search />
+          </InputGroupAddon>
+          {searchQuery && (
+            <InputGroupAddon align="inline-end">
+              <X
+                onClick={() => setSearchQuery("")}
+                className="size-3.5 cursor-pointer"
+                type="button"
+              />
             </InputGroupAddon>
-            {searchQuery && (
-              <InputGroupAddon align="inline-end">
-                <X
-                  onClick={() => setSearchQuery("")}
-                  className="size-3.5 cursor-pointer"
-                  type="button"
-                />
-              </InputGroupAddon>
-            )}
-          </InputGroup>
-          <div className="flex flex-wrap items-center gap-4 sm:justify-between">
-            <Select
-              defaultValue="5"
-              value={String(pageParams.size)}
-              onValueChange={(value) => setSize(Number(value))}
-            >
-              <SelectTrigger className="cursor-pointer">
-                <SelectValue defaultValue={pageParams.size} defaultChecked />
-              </SelectTrigger>
-              <SelectContent position="item-aligned">
-                <SelectGroup>
-                  {ROWS_PER_PAGE.map((row) => {
-                    return (
-                      <SelectItem key={row} value={String(row)}>
-                        {row || 5}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Button
-              variant="secondary"
-              className="bg-primary/10 hover:bg-primary/20 cursor-pointer"
-            >
-              <Upload />
-              Export
-            </Button>
-            <CustomerCreateFormSheet />
-          </div>
+          )}
+        </InputGroup>
+        <div className="flex flex-wrap items-center gap-4 sm:justify-between">
+          <Select
+            defaultValue="5"
+            value={String(pageParams.size)}
+            onValueChange={(value) => setSize(Number(value))}
+          >
+            <SelectTrigger className="cursor-pointer">
+              <SelectValue defaultValue={pageParams.size} defaultChecked />
+            </SelectTrigger>
+            <SelectContent position="item-aligned">
+              <SelectGroup>
+                {ROWS_PER_PAGE.map((row) => {
+                  return (
+                    <SelectItem key={row} value={String(row)}>
+                      {row || 5}
+                    </SelectItem>
+                  );
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button
+            variant="secondary"
+            className="bg-primary/10 hover:bg-primary/20 cursor-pointer"
+          >
+            <Upload />
+            Export
+          </Button>
+          <CustomerCreateFormSheet />
         </div>
-        <ProductDataTable
-          columns={columns}
-          data={
-            isSearching
-              ? searchResult?.data || []
-              : customers?.data?.content || []
-          }
-          isLoading={isSearchFetching}
-          page={isSearching ? undefined : customers?.data?.page}
-          currentPage={pageParams.page}
-          onPageChange={setPage}
-        />
       </div>
+      <ProductDataTable
+        columns={columns}
+        data={
+          isSearching
+            ? searchResult?.data || []
+            : customers?.data?.content || []
+        }
+        isLoading={isSearchFetching}
+        page={isSearching ? undefined : customers?.data?.page}
+        currentPage={pageParams.page}
+        onPageChange={setPage}
+      />
     </div>
   );
 }
