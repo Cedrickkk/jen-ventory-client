@@ -4,8 +4,14 @@ import {
   getProductById,
   getProductVariantsById,
   searchProduct,
+  toggleProductStatus,
 } from "@/features/products/api/product-api";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 
 export const productQueries = {
@@ -66,4 +72,20 @@ export const useGetProductVariants = (
   params?: PageParamsSchema,
 ) => {
   return useQuery(productQueries.variant(id, params));
+};
+
+export const useToggleProductStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, active }: { id: number; active: boolean }) =>
+      toggleProductStatus(id, active),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: productQueries.lists() });
+      queryClient.invalidateQueries({
+        queryKey: productQueries.detail(variables.id).queryKey,
+      });
+      queryClient.invalidateQueries({ queryKey: productQueries.searches() });
+    },
+  });
 };

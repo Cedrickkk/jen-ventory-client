@@ -107,3 +107,21 @@ export const getProductVariantsById = async (
     throw error;
   }
 };
+
+export const toggleProductStatus = async (id: number, active: boolean) => {
+  try {
+    const endpoint = active
+      ? `/products/${id}/deactivate`
+      : `/products/${id}/reactivate`;
+    const { data } = await api.patch<SuccessApiResponse<Product>>(endpoint);
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
