@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import EditProductVariantFormDialog from "@/features/products/components/forms/product-edit-form-dialog";
+import ProductVariantEditFormDialog from "@/features/products/components/forms/product-variant-edit-form-dialog";
 import type { ProductVariant } from "@/features/products/schema/product";
 import { formatCurrency } from "@/lib/currency";
 import { Link } from "@tanstack/react-router";
@@ -94,7 +94,7 @@ export const columns: ColumnDef<ProductVariant>[] = [
     cell: ({ row }) => {
       return (
         <ButtonGroup>
-          <EditProductVariantFormDialog
+          <ProductVariantEditFormDialog
             id={row.original.id}
             variant={row.original}
           />

@@ -37,7 +37,7 @@ type EditProductFormDialogProps = {
   variant: EditProductVariant;
 };
 
-export default function EditProductVariantFormDialog({
+export default function ProductVariantEditFormDialog({
   id,
   variant,
 }: EditProductFormDialogProps) {
