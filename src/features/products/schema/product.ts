@@ -11,6 +11,7 @@ export const productResponseSchema = z.object({
   ...baseResponseDataSchema.shape,
   ...productSchema.shape,
   active: z.boolean(),
+  variantCount: z.number(),
 });
 
 export const productVariantSchema = z.object({
