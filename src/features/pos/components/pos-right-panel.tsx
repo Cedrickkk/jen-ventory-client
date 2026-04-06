@@ -60,7 +60,7 @@ export default function PosRightPanel() {
         </TabsList>
 
         <TabsContent value="cart" className="my-6 mt-3.5">
-          <div className="sticky top-0 h-[calc(100vh-4rem)] overflow-hidden">
+          <div className="sticky top-0 h-[calc(109vh-4rem)] overflow-hidden">
             <CartTabContent />
           </div>
         </TabsContent>

@@ -132,7 +132,7 @@ function RouteComponent() {
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
-            <div className="flex h-200 flex-col overflow-y-auto">
+            <div className="my-12 flex h-250 flex-col overflow-y-auto">
               {isSearching && isSearchFetching ? (
                 <div className="absolute inset-0 z-10 flex items-center justify-center">
                   <LoaderCircle className="text-muted-foreground size-8 animate-spin" />

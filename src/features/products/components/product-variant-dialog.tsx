@@ -36,6 +36,8 @@ export default function ProductVariantDialog({
     pageParams,
   );
 
+  const variants = productVariants?.data?.content ?? [];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-5/6 flex-col gap-0 p-0 md:max-w-5xl">
@@ -46,12 +48,18 @@ export default function ProductVariantDialog({
           <ScrollArea className="flex max-h-full flex-col overflow-hidden">
             <DialogDescription className="w-full space-y-4 p-4" asChild>
               <div>
-                {productVariants?.data?.content.map((variant) =>
-                  renderVariant ? (
-                    renderVariant(variant)
-                  ) : (
-                    <ProductVariantCard key={variant.id} variant={variant} />
-                  ),
+                {variants.length === 0 ? (
+                  <p className="text-muted-foreground text-center text-sm">
+                    No variants found.
+                  </p>
+                ) : (
+                  variants.map((variant) =>
+                    renderVariant ? (
+                      renderVariant(variant)
+                    ) : (
+                      <ProductVariantCard key={variant.id} variant={variant} />
+                    ),
+                  )
                 )}
               </div>
             </DialogDescription>
