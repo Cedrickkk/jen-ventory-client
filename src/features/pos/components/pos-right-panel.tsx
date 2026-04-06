@@ -27,7 +27,10 @@ export default function PosRightPanel() {
       <div className="flex items-center justify-between">
         <div className="flex h-12 items-center justify-between gap-2">
           <div className="flex items-center gap-3">
-            <div className="relative">
+            <div
+              className="relative cursor-pointer"
+              onClick={() => setActiveTab("cart")}
+            >
               <ShoppingCart className="text-primary size-5" />
               {count > 0 && (
                 <Badge className="absolute -top-2.5 -right-2.5 h-5 min-w-5 px-1 tabular-nums">
