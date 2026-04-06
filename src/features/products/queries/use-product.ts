@@ -17,7 +17,7 @@ import {
 import { useDebounce } from "use-debounce";
 
 export const productQueries = {
-  all: () => ["customers"] as const,
+  all: () => ["products"] as const,
   lists: () => [...productQueries.all(), "list"] as const,
   list: (params?: PageParamsSchema) => {
     return queryOptions({
