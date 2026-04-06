@@ -21,6 +21,7 @@ import { Route as AuthenticatedPosIndexRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedGcashIndexRouteImport } from './routes/_authenticated/gcash/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCustomersIndexRouteImport } from './routes/_authenticated/customers/index'
+import { Route as AuthenticatedProductsProductIdRouteImport } from './routes/_authenticated/products/$productId'
 import { Route as AuthenticatedCustomersCustomerIdRouteImport } from './routes/_authenticated/customers/$customerId'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -89,6 +90,12 @@ const AuthenticatedCustomersIndexRoute =
     path: '/customers/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedProductsProductIdRoute =
+  AuthenticatedProductsProductIdRouteImport.update({
+    id: '/$productId',
+    path: '/$productId',
+    getParentRoute: () => AuthenticatedProductsRouteRoute,
+  } as any)
 const AuthenticatedCustomersCustomerIdRoute =
   AuthenticatedCustomersCustomerIdRouteImport.update({
     id: '/customers/$customerId',
@@ -103,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof AuthenticatedProductsRouteRouteWithChildren
   '/transactions': typeof AuthenticatedTransactionsRouteRouteWithChildren
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
+  '/products/$productId': typeof AuthenticatedProductsProductIdRoute
   '/customers/': typeof AuthenticatedCustomersIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/gcash/': typeof AuthenticatedGcashIndexRoute
@@ -113,6 +121,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
+  '/products/$productId': typeof AuthenticatedProductsProductIdRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/gcash': typeof AuthenticatedGcashIndexRoute
@@ -129,6 +138,7 @@ export interface FileRoutesById {
   '/_authenticated/products': typeof AuthenticatedProductsRouteRouteWithChildren
   '/_authenticated/transactions': typeof AuthenticatedTransactionsRouteRouteWithChildren
   '/_authenticated/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
+  '/_authenticated/products/$productId': typeof AuthenticatedProductsProductIdRoute
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/gcash/': typeof AuthenticatedGcashIndexRoute
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/transactions'
     | '/customers/$customerId'
+    | '/products/$productId'
     | '/customers/'
     | '/dashboard/'
     | '/gcash/'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/customers/$customerId'
+    | '/products/$productId'
     | '/customers'
     | '/dashboard'
     | '/gcash'
@@ -170,6 +182,7 @@ export interface FileRouteTypes {
     | '/_authenticated/products'
     | '/_authenticated/transactions'
     | '/_authenticated/customers/$customerId'
+    | '/_authenticated/products/$productId'
     | '/_authenticated/customers/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/gcash/'
@@ -269,6 +282,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCustomersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/products/$productId': {
+      id: '/_authenticated/products/$productId'
+      path: '/$productId'
+      fullPath: '/products/$productId'
+      preLoaderRoute: typeof AuthenticatedProductsProductIdRouteImport
+      parentRoute: typeof AuthenticatedProductsRouteRoute
+    }
     '/_authenticated/customers/$customerId': {
       id: '/_authenticated/customers/$customerId'
       path: '/customers/$customerId'
@@ -308,11 +328,13 @@ const AuthenticatedGcashRouteRouteWithChildren =
   )
 
 interface AuthenticatedProductsRouteRouteChildren {
+  AuthenticatedProductsProductIdRoute: typeof AuthenticatedProductsProductIdRoute
   AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
 }
 
 const AuthenticatedProductsRouteRouteChildren: AuthenticatedProductsRouteRouteChildren =
   {
+    AuthenticatedProductsProductIdRoute: AuthenticatedProductsProductIdRoute,
     AuthenticatedProductsIndexRoute: AuthenticatedProductsIndexRoute,
   }
 
