@@ -4,9 +4,11 @@ import type {
   SuccessApiResponse,
 } from "@/features/api/schema/response";
 import type {
+  EditProductVariant,
   PaginatedProduct,
   PaginatedProductVariant,
   Product,
+  ProductVariant,
 } from "@/features/products/schema/product";
 import { api } from "@/lib/api";
 import axios from "axios";
@@ -114,6 +116,27 @@ export const toggleProductStatus = async (id: number, active: boolean) => {
       ? `/products/${id}/deactivate`
       : `/products/${id}/reactivate`;
     const { data } = await api.patch<SuccessApiResponse<Product>>(endpoint);
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const editProductVariant = async (
+  id: number,
+  variant: EditProductVariant,
+) => {
+  try {
+    const { data } = await api.put<SuccessApiResponse<ProductVariant>>(
+      `/products/${id}/variants/${variant.id}`,
+      variant,
+    );
     return data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {

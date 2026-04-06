@@ -31,10 +31,19 @@ export const productVariantResponseSchema = z.object({
   active: z.boolean(),
 });
 
+export const editProductVariantSchema = z.object({
+  id: z.number(),
+  price: z.number().positive(),
+  size: z.string().optional().nullable(),
+  flavor: z.string().optional().nullable(),
+  packaging: z.string().optional().nullable(),
+});
+
 export type Product = z.infer<typeof productResponseSchema>;
 export type CreateProduct = z.infer<typeof productSchema>;
 export type PaginatedProduct = Paginated<Product>;
 
 export type ProductVariant = z.infer<typeof productVariantResponseSchema>;
+export type EditProductVariant = z.infer<typeof editProductVariantSchema>;
 export type CreateProductVariant = z.infer<typeof productVariantSchema>;
 export type PaginatedProductVariant = Paginated<ProductVariant>;
