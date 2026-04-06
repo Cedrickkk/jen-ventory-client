@@ -6,6 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import EditProductVariantFormDialog from "@/features/products/components/forms/product-edit-form-dialog";
 import type { ProductVariant } from "@/features/products/schema/product";
 import { formatCurrency } from "@/lib/currency";
 import { Link } from "@tanstack/react-router";
@@ -54,7 +55,7 @@ export const columns: ColumnDef<ProductVariant>[] = [
     },
     cell: ({ getValue }) => (
       <span className="text-muted-foreground">
-        {(getValue() as number) ?? "None"}
+        {!getValue() || getValue() === "" ? "-" : (getValue() as string)}
       </span>
     ),
   },
@@ -93,6 +94,10 @@ export const columns: ColumnDef<ProductVariant>[] = [
     cell: ({ row }) => {
       return (
         <ButtonGroup>
+          <EditProductVariantFormDialog
+            id={row.original.id}
+            variant={row.original}
+          />
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
