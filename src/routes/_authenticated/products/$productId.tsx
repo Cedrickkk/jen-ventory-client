@@ -8,7 +8,11 @@ import { usePagination } from "@/hooks/use-pagination";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import ProductVariantCreateFormSheet from "@/features/products/components/forms/product-variant-create-form-sheet";
+import { Link } from "@tanstack/react-router";
 import { formatDate } from "date-fns";
+import { ArrowLeft } from "lucide-react";
 import { useMemo } from "react";
 
 export const Route = createFileRoute("/_authenticated/products/$productId")({
@@ -41,46 +45,58 @@ function RouteComponent() {
   );
   return (
     <div className="flex flex-col gap-8 py-8">
+      <div className="flex items-center justify-between gap-4">
+        <Button variant="outline" asChild size="icon-lg">
+          <Link to="/products">
+            <ArrowLeft />
+          </Link>
+        </Button>
+        <ProductVariantCreateFormSheet id={Number(productId)} />
+      </div>
+
       {/* Product Info Section */}
       {product && (
-        <div className="flex flex-col gap-8 md:flex-row">
+        <div className="flex flex-col justify-between gap-8 md:flex-row">
           {/* Image (placeholder) */}
-          <div>
+          <div className="flex justify-between gap-9">
             <img
-              src="https://placehold.co/600x400"
+              src="/tilapia.jpg"
               alt={product.name}
               className="w-full max-w-md rounded-xl object-cover"
             />
-          </div>
-          {/* Info */}
-          <div className="flex w-full flex-col gap-4 md:w-1/2">
-            {/* Badge for active state */}
-            <div>
-              <Badge variant={product.active ? "secondary" : "outline"}>
-                {product.active ? "Active" : "Inactive"}
-              </Badge>
-            </div>
-            {/* Name */}
-            <h1 className="text-3xl leading-tight font-bold">{product.name}</h1>
-            {/* Description */}
-            {product.description && (
-              <p className="text-muted-foreground max-w-xl text-base">
-                {product.description}
-              </p>
-            )}
-            {/* Additional info below (createdAt, variant count) */}
-            <div className="mt-4 flex flex-col gap-1">
-              <div className="text-muted-foreground text-sm">
-                <span className="font-medium">Added on:</span>{" "}
-                {formatDate(product.createdAt, "MMM d, yyyy h:mm a")}
+
+            {/* Info */}
+            <div className="flex w-full flex-col gap-4 md:min-w-1/2">
+              {/* Badge for active state */}
+              <div>
+                <Badge variant={product.active ? "secondary" : "outline"}>
+                  {product.active ? "Active" : "Inactive"}
+                </Badge>
               </div>
-              <div className="text-muted-foreground text-sm">
-                <span className="font-medium">Variants:</span>{" "}
-                {product.variantCount}
-              </div>
-              <div className="text-muted-foreground text-sm">
-                <span className="font-medium">Available Stocks:</span>{" "}
-                {totalAvailableStocks}
+              {/* Name */}
+              <h1 className="text-3xl leading-tight font-bold">
+                {product.name}
+              </h1>
+              {/* Description */}
+              {product.description && (
+                <p className="text-muted-foreground max-w-xl text-base">
+                  {product.description}
+                </p>
+              )}
+              {/* Additional info below (createdAt, variant count) */}
+              <div className="mt-4 flex flex-col gap-1">
+                <div className="text-muted-foreground text-sm">
+                  <span className="font-medium">Added on:</span>{" "}
+                  {formatDate(product.createdAt, "MMM d, yyyy h:mm a")}
+                </div>
+                <div className="text-muted-foreground text-sm">
+                  <span className="font-medium">Variants:</span>{" "}
+                  {product.variantCount}
+                </div>
+                <div className="text-muted-foreground text-sm">
+                  <span className="font-medium">Available Stocks:</span>{" "}
+                  {totalAvailableStocks}
+                </div>
               </div>
             </div>
           </div>

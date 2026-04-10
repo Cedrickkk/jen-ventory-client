@@ -21,7 +21,7 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
     >
       <div className="h-28 w-full">
         <img
-          src="https://placehold.co/600x400"
+          src="/IMG-3545-1-600x631.jpg"
           alt="Event cover"
           className="h-full w-full object-cover"
         />

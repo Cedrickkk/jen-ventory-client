@@ -95,7 +95,7 @@ export const columns: ColumnDef<ProductVariant>[] = [
       return (
         <ButtonGroup>
           <ProductVariantEditFormDialog
-            id={row.original.id}
+            id={row.original.productId}
             variant={row.original}
           />
           <Tooltip>

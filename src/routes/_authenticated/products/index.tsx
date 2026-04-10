@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import CustomerCreateFormSheet from "@/features/customers/components/forms/customer-create-form-sheet";
+import ProductCreateFormSheet from "@/features/products/components/forms/product-create-form-sheet";
 import { ProductDataTable } from "@/features/products/components/tables/product-data-table";
 import { columns } from "@/features/products/components/tables/product-data-table-columns";
 import {
@@ -112,7 +112,7 @@ function RouteComponent() {
             <Upload />
             Export
           </Button>
-          <CustomerCreateFormSheet />
+          <ProductCreateFormSheet />
         </div>
       </div>
       <ProductDataTable

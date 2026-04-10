@@ -4,6 +4,8 @@ import type {
   SuccessApiResponse,
 } from "@/features/api/schema/response";
 import type {
+  CreateProduct,
+  CreateProductVariant,
   EditProductVariant,
   PaginatedProduct,
   PaginatedProductVariant,
@@ -116,6 +118,45 @@ export const toggleProductStatus = async (id: number, active: boolean) => {
       ? `/products/${id}/deactivate`
       : `/products/${id}/reactivate`;
     const { data } = await api.patch<SuccessApiResponse<Product>>(endpoint);
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const createProduct = async (product: CreateProduct) => {
+  try {
+    const { data } = await api.post<SuccessApiResponse<Product>>(
+      `/products`,
+      product,
+    );
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const createProductVariant = async (
+  id: number,
+  variant: CreateProductVariant,
+) => {
+  try {
+    const { data } = await api.post<SuccessApiResponse<ProductVariant>>(
+      `/products/${id}/variants`,
+      variant,
+    );
     return data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {

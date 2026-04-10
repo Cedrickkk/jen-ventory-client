@@ -1,16 +1,6 @@
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   InputGroup,
@@ -19,39 +9,49 @@ import {
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useEditProductVariant } from "@/features/products/queries/use-product";
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useCreateProductVariant } from "@/features/products/queries/use-product";
 import {
-  editProductVariantSchema,
-  type EditProductVariant,
+  productVariantSchema,
+  type CreateProductVariant,
 } from "@/features/products/schema/product";
 import { useForm } from "@tanstack/react-form";
-import { CheckIcon, LoaderCircle, Pencil, PhilippinePeso } from "lucide-react";
+import { CheckIcon, LoaderCircle, PhilippinePeso, Plus } from "lucide-react";
 import { toast } from "sonner";
 
-type EditProductFormDialogProps = {
+type ProductVariantCreateFormSheetProps = {
   id: number;
-  variant: EditProductVariant;
 };
 
-export default function ProductVariantEditFormDialog({
+export default function ProductVariantCreateFormSheet({
   id,
-  variant,
-}: EditProductFormDialogProps) {
-  const { mutateAsync: editProductVariantAsync, isPending } =
-    useEditProductVariant();
+}: ProductVariantCreateFormSheetProps) {
+  const {
+    mutateAsync: createProductVariantAsync,
+    isPending,
+    error,
+  } = useCreateProductVariant();
   const form = useForm({
     defaultValues: {
-      ...variant,
-    },
+      sku: "",
+      size: "" as string | undefined,
+      flavor: "" as string | undefined,
+      packacging: "" as string | undefined,
+      price: 0,
+    } as CreateProductVariant,
     validators: {
-      onSubmit: editProductVariantSchema,
+      onSubmit: productVariantSchema,
     },
     onSubmit: async ({ value }) => {
-      await editProductVariantAsync(
+      await createProductVariantAsync(
         { id, variant: value },
         {
           onSuccess: () => {
@@ -60,7 +60,7 @@ export default function ProductVariantEditFormDialog({
               <Alert className="border-none bg-green-600 font-sans text-white dark:bg-green-400">
                 <CheckIcon />
                 <AlertTitle>
-                  Product variant has been updated successfully.
+                  Product variant has been created successfully.
                 </AlertTitle>
               </Alert>
             ));
@@ -71,42 +71,37 @@ export default function ProductVariantEditFormDialog({
   });
 
   return (
-    <Dialog>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DialogTrigger asChild>
-            <Button variant="ghost" size="icon-lg" className="cursor-pointer">
-              <Pencil />
-            </Button>
-          </DialogTrigger>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Edit</p>
-        </TooltipContent>
-      </Tooltip>
-      <form
-        id={`edit-product-variant-form-${id}`}
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-      >
-        <DialogContent className="md:max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Edit Product Variant</DialogTitle>
-            <DialogDescription>
-              Make changes to variant here. Click save when you&apos;re done.
-            </DialogDescription>
-          </DialogHeader>
-          <FieldGroup>
-            <form.Field name="packaging">
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button>
+          <Plus />
+          Add Variant
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="md:max-w-5xl">
+        <SheetHeader>
+          <SheetTitle>Create Product</SheetTitle>
+          <SheetDescription>
+            Enter the product details below, then click save to create the
+            customer.
+          </SheetDescription>
+        </SheetHeader>
+        <form
+          id="create-product-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+        >
+          <div className="grid flex-1 auto-rows-min gap-6 px-4">
+            <form.Field name="sku">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
 
                 return (
                   <div className="grid gap-3">
-                    <Label htmlFor="name">Packaging</Label>
+                    <Label htmlFor="name">SKU</Label>
                     <Input
                       id="name"
                       value={field.state.value || ""}
@@ -123,30 +118,7 @@ export default function ProductVariantEditFormDialog({
                 );
               }}
             </form.Field>
-            <form.Field name="flavor">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
 
-                return (
-                  <div className="grid gap-3">
-                    <Label htmlFor="address">Flavor</Label>
-                    <Input
-                      id="address"
-                      value={field.state.value || ""}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onBlur={field.handleBlur}
-                    />
-                    {isInvalid && (
-                      <FieldError
-                        className="text-xs"
-                        errors={field.state.meta.errors}
-                      />
-                    )}
-                  </div>
-                );
-              }}
-            </form.Field>
             <form.Field name="size">
               {(field) => {
                 const isInvalid =
@@ -154,9 +126,9 @@ export default function ProductVariantEditFormDialog({
 
                 return (
                   <div className="grid gap-3">
-                    <Label htmlFor="phone">Size</Label>
+                    <Label htmlFor="description">Size</Label>
                     <Input
-                      id="phone"
+                      id="description"
                       value={field.state.value || ""}
                       onChange={(e) => field.handleChange(e.target.value)}
                       onBlur={field.handleBlur}
@@ -171,6 +143,32 @@ export default function ProductVariantEditFormDialog({
                 );
               }}
             </form.Field>
+
+            <form.Field name="packaging">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <div className="grid gap-3">
+                    <Label htmlFor="description">Packaging</Label>
+                    <Input
+                      id="description"
+                      value={field.state.value || ""}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      onBlur={field.handleBlur}
+                    />
+                    {isInvalid && (
+                      <FieldError
+                        className="text-xs"
+                        errors={field.state.meta.errors}
+                      />
+                    )}
+                  </div>
+                );
+              }}
+            </form.Field>
+
             <form.Field name="price">
               {(field) => {
                 const isInvalid =
@@ -178,7 +176,7 @@ export default function ProductVariantEditFormDialog({
 
                 return (
                   <div className="grid gap-3">
-                    <Label htmlFor="phone">Price</Label>
+                    <Label htmlFor="description">Price</Label>
                     <InputGroup>
                       <InputGroupInput
                         id="amount"
@@ -206,26 +204,29 @@ export default function ProductVariantEditFormDialog({
                 );
               }}
             </form.Field>
-          </FieldGroup>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              form={`edit-product-variant-form-${id}`}
-              className="cursor-pointer"
-            >
-              {isPending && (
-                <div className="py-6 text-center text-sm">
-                  <LoaderCircle className="mx-auto h-4 w-4 animate-spin" />
-                </div>
-              )}
-              Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </form>
-    </Dialog>
+
+            {error && (
+              <FieldError
+                className="text-xs"
+                errors={[{ message: error?.message }]}
+              />
+            )}
+          </div>
+        </form>
+        <SheetFooter>
+          <Button type="submit" form="create-product-form">
+            {isPending && (
+              <div className="py-6 text-center text-sm">
+                <LoaderCircle className="mx-auto h-4 w-4 animate-spin" />
+              </div>
+            )}
+            Save
+          </Button>
+          <SheetClose asChild>
+            <Button variant="outline">Close</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 }

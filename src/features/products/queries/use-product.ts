@@ -1,5 +1,7 @@
 import type { PageParamsSchema } from "@/features/api/schema/pagination";
 import {
+  createProduct,
+  createProductVariant,
   editProductVariant,
   getAllProducts,
   getProductById,
@@ -7,7 +9,11 @@ import {
   searchProduct,
   toggleProductStatus,
 } from "@/features/products/api/product-api";
-import type { EditProductVariant } from "@/features/products/schema/product";
+import type {
+  CreateProduct,
+  CreateProductVariant,
+  EditProductVariant,
+} from "@/features/products/schema/product";
 import {
   queryOptions,
   useMutation,
@@ -76,6 +82,39 @@ export const useGetProductVariants = (
   return useQuery(productQueries.variant(id, params));
 };
 
+export const useCreateProduct = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (product: CreateProduct) => createProduct(product),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: productQueries.searches() });
+      queryClient.invalidateQueries({ queryKey: productQueries.lists() });
+    },
+  });
+};
+
+export const useCreateProductVariant = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      variant,
+    }: {
+      id: number;
+      variant: CreateProductVariant;
+    }) => createProductVariant(id, variant),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: productQueries.lists() });
+      queryClient.invalidateQueries({
+        queryKey: productQueries.variants(variables.id),
+      });
+      queryClient.invalidateQueries({ queryKey: productQueries.searches() });
+    },
+  });
+};
+
 export const useEditProductVariant = () => {
   const queryClient = useQueryClient();
 
@@ -88,6 +127,12 @@ export const useEditProductVariant = () => {
       variant: EditProductVariant;
     }) => editProductVariant(id, variant),
     onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: productQueries.variants(variables.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: productQueries.variant(variables.variant.id).queryKey,
+      });
       queryClient.invalidateQueries({
         queryKey: productQueries.detail(variables.id).queryKey,
       });
