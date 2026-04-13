@@ -15,7 +15,7 @@ type GCashFeeTiersTableProps = {
 
 export function GCashFeeTiersTable({ tiers }: GCashFeeTiersTableProps) {
   return (
-    <Table className="p-6">
+    <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Min. Amount</TableHead>
@@ -23,7 +23,7 @@ export function GCashFeeTiersTable({ tiers }: GCashFeeTiersTableProps) {
           <TableHead className="text-right">Fee</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
+      <TableBody className="p-6">
         {tiers.map((tier) => (
           <TableRow key={tier.id}>
             <TableCell className="py-4">

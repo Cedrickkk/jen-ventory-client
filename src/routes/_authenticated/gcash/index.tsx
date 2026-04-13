@@ -30,15 +30,12 @@ function RouteComponent() {
   return (
     <div>
       <GCashFeeTiersTable tiers={tiers?.data || []} />
-      <div className="space-y-3">
-        <h2>Logs here</h2>
-        <GCashServiceLogsDataTable
-          columns={columns}
-          data={gcashServiceLogs?.data?.content || []}
-          currentPage={pageParams.page}
-          onPageChange={setPage}
-        />
-      </div>
+      <GCashServiceLogsDataTable
+        columns={columns}
+        data={gcashServiceLogs?.data?.content || []}
+        currentPage={pageParams.page}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

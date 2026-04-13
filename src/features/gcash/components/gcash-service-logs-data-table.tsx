@@ -7,13 +7,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
 import {
   Pagination,
   PaginationContent,
@@ -70,13 +64,6 @@ export function GCashServiceLogsDataTable<TData, TValue>({
 
   return (
     <Card className="rounded-sm border-none shadow-none">
-      <CardHeader>
-        <CardTitle>Service Logs</CardTitle>
-        <CardDescription>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit
-          culpa totam harum.
-        </CardDescription>
-      </CardHeader>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
