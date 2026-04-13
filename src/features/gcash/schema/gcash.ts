@@ -5,8 +5,8 @@ import z from "zod/v3";
 export const gCashTransactionTypeEnum = z.enum(["CASH_IN", "CASH_OUT"]);
 
 export const gCashFeeTierSchema = z.object({
-  minimumAmount: z.number().min(1, { message: "Minimum amount is required." }),
-  maximumAmount: z.number().min(1, { message: "Maximum amount is required" }),
+  minAmount: z.number().min(1, { message: "Minimum amount is required." }),
+  maxAmount: z.number().min(1, { message: "Maximum amount is required" }),
   fee: z.number().min(1, { message: "Fee is required." }),
 });
 
