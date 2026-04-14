@@ -8,7 +8,7 @@ export const columns: ColumnDef<GCashServiceLog>[] = [
   {
     accessorKey: "customerName",
     header: ({ column }) => {
-      return <TableHeaderButton column={column}>Name</TableHeaderButton>;
+      return <TableHeaderButton column={column}>Customer</TableHeaderButton>;
     },
     cell: ({ getValue }) => {
       const value = getValue() as string;
