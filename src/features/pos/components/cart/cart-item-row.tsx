@@ -60,7 +60,7 @@ export default function CartItemRow({ item }: CartItemRowProps) {
               .join(" · ")}
           </p>
         )}
-        <p className="pt-1 text-sm font-medium">
+        <p className="pt-1 text-base font-medium">
           {formatCurrency(String(subtotal))}
           <span className="text-muted-foreground ml-1 text-xs font-normal">
             ({formatCurrency(String(item.unitPrice))} × {item.quantity})
