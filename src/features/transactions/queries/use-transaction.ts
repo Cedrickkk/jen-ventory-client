@@ -141,18 +141,21 @@ export const useCreatePosTransaction = () => {
 
       s.setLastTransaction(data);
       useAppStore.getState().resetPOS();
+
       if (customerId !== null) {
         queryClient.invalidateQueries({
-          queryKey: [...customerQueries.details(), customerId],
+          queryKey: customerQueries.detail(customerId).queryKey,
         });
       }
 
       queryClient.invalidateQueries({
-        queryKey: productQueries.lists(),
+        queryKey: transactionQueries.detail(data.id).queryKey,
       });
 
-      queryClient.invalidateQueries({
-        queryKey: transactionQueries.lists(),
+      data.items.forEach((item) => {
+        queryClient.invalidateQueries({
+          queryKey: productQueries.variants(item.productId),
+        });
       });
     },
     onError: (error) => {
