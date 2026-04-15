@@ -20,6 +20,7 @@ export const transactionItemSchema = z.object({
 export const transactionItemResponseSchema = z.object({
   ...baseResponseDataSchema.omit({ createdAt: true, updatedAt: true }).shape,
   ...transactionItemSchema.omit({ transactionId: true }).shape,
+  productId: z.number(),
   productVariantName: z.string(),
   sku: z.string(),
   subtotal: z.number(),
@@ -51,6 +52,16 @@ export const transactionResponseSchema = z.object({
   payments: z.array(transactionPaymentResponseSchema).default([]),
 });
 
+export const transactionSummaryResponseSchema = z.object({
+  ...baseResponseDataSchema.omit({ updatedAt: true }).shape,
+  ...transactionSchema.pick({
+    customerId: true,
+    representative: true,
+  }).shape,
+  customerName: z.string().nullable(),
+  totalAmount: z.number(),
+});
+
 export type Transaction = z.infer<typeof transactionResponseSchema>;
 export type CreateTransaction = z.infer<typeof transactionSchema>;
 export type PaginatedTransaction = Paginated<Transaction>;
@@ -62,4 +73,8 @@ export type PaymentMethod = z.infer<typeof paymentMethodEnum>;
 
 export type TransactionPayment = z.infer<
   typeof transactionPaymentResponseSchema
+>;
+
+export type TransactionSummary = z.infer<
+  typeof transactionSummaryResponseSchema
 >;
