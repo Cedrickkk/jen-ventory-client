@@ -4,6 +4,7 @@ import type {
   SuccessApiResponse,
 } from "@/features/api/schema/response";
 import type {
+  AdjustmentRequest,
   CreateProduct,
   CreateProductVariant,
   EditProductVariant,
@@ -11,6 +12,8 @@ import type {
   PaginatedProductVariant,
   Product,
   ProductVariant,
+  RestockRequest,
+  ReturnRequest,
 } from "@/features/products/schema/product";
 import { api } from "@/lib/api";
 import axios from "axios";
@@ -80,7 +83,7 @@ export const searchProduct = async (query: string) => {
   }
 };
 
-export const getProductVariantsById = async (
+export const getProductVariantsByProductId = async (
   id: number,
   params?: PageParamsSchema,
 ) => {
@@ -132,9 +135,25 @@ export const toggleProductStatus = async (id: number, active: boolean) => {
 
 export const createProduct = async (product: CreateProduct) => {
   try {
+    const formData = new FormData();
+    formData.append("name", product.name);
+
+    if (product.description) {
+      formData.append("description", product.description);
+    }
+
+    if (product.image) {
+      formData.append("image", product.image);
+    }
+
     const { data } = await api.post<SuccessApiResponse<Product>>(
       `/products`,
-      product,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
     );
     return data;
   } catch (error: unknown) {
@@ -153,9 +172,22 @@ export const createProductVariant = async (
   variant: CreateProductVariant,
 ) => {
   try {
+    const formData = new FormData();
+    formData.append("sku", variant.sku);
+    formData.append("price", String(variant.price));
+    if (variant.size) formData.append("size", variant.size);
+    if (variant.flavor) formData.append("flavor", variant.flavor);
+    if (variant.packaging) formData.append("packaging", variant.packaging);
+    if (variant.image) formData.append("image", variant.image);
+
     const { data } = await api.post<SuccessApiResponse<ProductVariant>>(
       `/products/${id}/variants`,
-      variant,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
     );
     return data;
   } catch (error: unknown) {
@@ -177,6 +209,92 @@ export const editProductVariant = async (
     const { data } = await api.put<SuccessApiResponse<ProductVariant>>(
       `/products/${id}/variants/${variant.id}`,
       variant,
+    );
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const getProductVariantDetailsById = async (
+  productId: number,
+  variantId: number,
+) => {
+  try {
+    const { data } = await api.get<SuccessApiResponse<ProductVariant>>(
+      `/products/${productId}/variants/${variantId}`,
+    );
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const restockProductVariant = async (
+  productId: number,
+  variantId: number,
+  request: RestockRequest,
+) => {
+  try {
+    const { data } = await api.post<SuccessApiResponse<ProductVariant>>(
+      `/products/${productId}/variants/${variantId}/restock`,
+      request,
+    );
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const adjustProductVariantStock = async (
+  productId: number,
+  variantId: number,
+  request: AdjustmentRequest,
+) => {
+  try {
+    const { data } = await api.post<SuccessApiResponse<ProductVariant>>(
+      `/products/${productId}/variants/${variantId}/adjustment`,
+      request,
+    );
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const returnProductVariantStock = async (
+  productId: number,
+  variantId: number,
+  request: ReturnRequest,
+) => {
+  try {
+    const { data } = await api.post<SuccessApiResponse<ProductVariant>>(
+      `/products/${productId}/variants/${variantId}/return`,
+      request,
     );
     return data;
   } catch (error: unknown) {

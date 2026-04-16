@@ -54,36 +54,29 @@ function RouteComponent() {
         <ProductVariantCreateFormSheet id={Number(productId)} />
       </div>
 
-      {/* Product Info Section */}
       {product && (
         <div className="flex flex-col justify-between gap-8 md:flex-row">
-          {/* Image (placeholder) */}
           <div className="flex justify-between gap-9">
             <img
-              src="/tilapia.jpg"
+              src={`${import.meta.env.VITE_BASE_URL}/storage/images/${product.image}`}
               alt={product.name}
               className="w-full max-w-md rounded-xl object-cover"
             />
 
-            {/* Info */}
             <div className="flex w-full flex-col gap-4 md:min-w-1/2">
-              {/* Badge for active state */}
               <div>
                 <Badge variant={product.active ? "secondary" : "outline"}>
                   {product.active ? "Active" : "Inactive"}
                 </Badge>
               </div>
-              {/* Name */}
               <h1 className="text-3xl leading-tight font-bold">
                 {product.name}
               </h1>
-              {/* Description */}
               {product.description && (
                 <p className="text-muted-foreground max-w-xl text-base">
                   {product.description}
                 </p>
               )}
-              {/* Additional info below (createdAt, variant count) */}
               <div className="mt-4 flex flex-col gap-1">
                 <div className="text-muted-foreground text-sm">
                   <span className="font-medium">Added on:</span>{" "}
@@ -103,7 +96,6 @@ function RouteComponent() {
         </div>
       )}
 
-      {/* Variants Table */}
       <ProductVariantDataTable
         columns={variantColumns}
         data={variants}

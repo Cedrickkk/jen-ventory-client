@@ -16,7 +16,7 @@ export default function ProductVariantCard({
     <Card className="w-full flex-row items-center gap-4 rounded-md p-4">
       <div className="max-w-35 min-w-35">
         <img
-          src="/IMG-3545-1-600x631.jpg"
+          src={`${import.meta.env.VITE_BASE_URL}/storage/images/${variant.image}`}
           alt="Product"
           className="h-30 w-full rounded object-cover"
         />

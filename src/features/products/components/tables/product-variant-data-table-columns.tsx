@@ -1,17 +1,11 @@
 import { TableHeaderButton } from "@/components/table-header-button";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import ProductVariantEditFormDialog from "@/features/products/components/forms/product-variant-edit-form-dialog";
+import ProductVariantStockMovementDialog from "@/features/products/components/forms/product-variant-stock-movement-dialog";
 import type { ProductVariant } from "@/features/products/schema/product";
 import { formatCurrency } from "@/lib/currency";
-import { Link } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
 
 export const columns: ColumnDef<ProductVariant>[] = [
   {
@@ -34,9 +28,23 @@ export const columns: ColumnDef<ProductVariant>[] = [
     header: ({ column }) => {
       return <TableHeaderButton column={column}>SKU</TableHeaderButton>;
     },
-    cell: ({ getValue }) => (
-      <span className="font-medium">{getValue() as string}</span>
-    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-4">
+          <Avatar className="size-9 rounded-sm">
+            <AvatarImage
+              src={`${import.meta.env.VITE_BASE_URL}/storage/images/${row.original.image}`}
+              alt={row.original.sku}
+              className="rounded-sm"
+            />
+            <AvatarFallback className="rounded-sm text-xs">
+              {row.original.sku}
+            </AvatarFallback>
+          </Avatar>
+          <span>{row.original.sku}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "size",
@@ -98,26 +106,10 @@ export const columns: ColumnDef<ProductVariant>[] = [
             id={row.original.productId}
             variant={row.original}
           />
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-lg"
-                className="cursor-pointer"
-                asChild
-              >
-                <Link
-                  to="/products/$productId"
-                  params={{ productId: row.original.id.toString() }}
-                >
-                  <Eye />
-                </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>View</p>
-            </TooltipContent>
-          </Tooltip>
+          <ProductVariantStockMovementDialog
+            productId={row.original.productId}
+            variant={row.original}
+          />
         </ButtonGroup>
       );
     },
