@@ -21,9 +21,9 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
     >
       <div className="h-28 w-full">
         <img
-          src="/IMG-3545-1-600x631.jpg"
-          alt="Event cover"
-          className="h-full w-full object-cover"
+          src={`${import.meta.env.VITE_BASE_URL}/storage/images/${product.image}`}
+          alt={product.name}
+          className="h-full w-full object-none"
         />
       </div>
       <CardHeader>
