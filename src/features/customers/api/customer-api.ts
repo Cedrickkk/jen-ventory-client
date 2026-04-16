@@ -65,9 +65,21 @@ export const searchCustomer = async (query: string) => {
 
 export const createCustomer = async (customer: CreateCustomer) => {
   try {
+    const formData = new FormData();
+    formData.append("name", customer.name);
+    formData.append("phone", customer.phone);
+    formData.append("address", customer.address);
+
+    if (customer.image) {
+      formData.append("image", customer.image);
+    }
+
     const { data } = await api.post<SuccessApiResponse<Customer>>(
       `/customers`,
-      customer,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      },
     );
     return data;
   } catch (error: unknown) {

@@ -13,13 +13,18 @@ export const customerSchema = z.object({
     .min(1, { message: "Phone mobile number is required." }),
   address: z.string().min(1, { message: "Address is required." }),
   active: z.boolean(),
+  image: z.instanceof(File).nullable(),
 });
 
-export const editCustomerSchema = customerSchema.omit({ active: true });
+export const editCustomerSchema = z.object({
+  ...customerSchema.omit({ active: true, image: true }).shape,
+  image: z.string(),
+});
 
 export const customerResponseSchema = z.object({
   ...baseResponseDataSchema.shape,
-  ...customerSchema.shape,
+  ...customerSchema.omit({ image: true }).shape,
+  image: z.string(),
 });
 
 export const customerTransactionSchema = z.object({

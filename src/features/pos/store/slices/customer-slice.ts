@@ -5,6 +5,7 @@ export type CustomerSummary = {
   id: number;
   name: string;
   phone: string;
+  image: string;
 };
 
 export type CustomerState = {

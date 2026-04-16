@@ -14,12 +14,17 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useCreateCustomer } from "@/features/customers/queries/use-customer";
-import { customerSchema } from "@/features/customers/schema/customer";
+import {
+  customerSchema,
+  type CreateCustomer,
+} from "@/features/customers/schema/customer";
 import { useForm } from "@tanstack/react-form";
-import { CheckIcon, LoaderCircle, Plus } from "lucide-react";
+import { CheckIcon, LoaderCircle, Plus, Upload } from "lucide-react";
+import { useRef } from "react";
 import { toast } from "sonner";
 
 export default function CustomerCreateFormSheet() {
+  const imageRef = useRef<HTMLInputElement | null>(null);
   const {
     mutateAsync: createCustomerAsync,
     isPending,
@@ -31,7 +36,8 @@ export default function CustomerCreateFormSheet() {
       phone: "",
       address: "",
       active: true,
-    },
+      image: null,
+    } as CreateCustomer,
     validators: {
       onSubmit: customerSchema,
     },
@@ -123,6 +129,7 @@ export default function CustomerCreateFormSheet() {
                 );
               }}
             </form.Field>
+
             <form.Field name="phone">
               {(field) => {
                 const isInvalid =
@@ -147,6 +154,64 @@ export default function CustomerCreateFormSheet() {
                 );
               }}
             </form.Field>
+
+            <form.Subscribe
+              selector={(state) => state.values.image}
+              children={(image) => (
+                <form.Field name="image">
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+
+                    return (
+                      <div className="space-y-3">
+                        <Label htmlFor="image">Picture</Label>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full"
+                          size="sm"
+                          onClick={() => imageRef.current?.click()}
+                        >
+                          <Upload className="mr-2 h-6 w-6" />
+                          {image ? image.name : "Upload Picture"}
+                        </Button>
+
+                        <Input
+                          id="image"
+                          type="file"
+                          accept=".jpg,.jpeg,.png"
+                          className="hidden"
+                          ref={imageRef}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] ?? null;
+                            field.handleChange(file);
+                            e.target.value = "";
+                          }}
+                        />
+                        {isInvalid && (
+                          <FieldError
+                            className="text-xs"
+                            errors={field.state.meta.errors}
+                          />
+                        )}
+                        <p className="text-muted-foreground text-xs">
+                          PDF, JPG, PNG, DOC (Max 10MB)
+                        </p>
+                        {field.state.value && (
+                          <img
+                            src={URL.createObjectURL(field.state.value)}
+                            alt="Preview"
+                            className="h-20 w-20 rounded-md object-cover"
+                          />
+                        )}
+                      </div>
+                    );
+                  }}
+                </form.Field>
+              )}
+            />
+
             {error && (
               <FieldError
                 className="text-xs"
