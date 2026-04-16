@@ -73,11 +73,22 @@ export default function CustomerTransactionDetailsDialog({
                 <FieldSet className="gap-4">
                   <Field orientation="horizontal">
                     <FieldLabel className="text-foreground font-semibold">
-                      Transaction ID:
+                      Date:
                     </FieldLabel>
                     <FieldDescription>
-                      #{transaction?.data?.id}
+                      {transaction?.data?.createdAt
+                        ? formatDate(
+                            transaction.data.createdAt,
+                            "MMM d, yyyy h:mm a",
+                          )
+                        : "N/A"}
                     </FieldDescription>
+                  </Field>
+                  <Field orientation="horizontal">
+                    <FieldLabel className="text-foreground font-semibold">
+                      Transaction ID:
+                    </FieldLabel>
+                    <FieldDescription>{transaction?.data?.id}</FieldDescription>
                   </Field>
                   <Field orientation="horizontal">
                     <FieldLabel className="text-foreground font-semibold">
