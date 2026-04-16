@@ -29,7 +29,7 @@ export default function CustomerInformation() {
                   alt={selectedCustomer.name}
                   className="rounded-sm"
                 />
-                <AvatarFallback className="text-xs">
+                <AvatarFallback className="rounded-sm text-xs">
                   {getInitials(selectedCustomer.name)}
                 </AvatarFallback>
               </Avatar>
