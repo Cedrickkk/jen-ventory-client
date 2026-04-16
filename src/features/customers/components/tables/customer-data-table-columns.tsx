@@ -1,4 +1,5 @@
 import { TableHeaderButton } from "@/components/table-header-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -8,6 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import EditCustomerFormDialog from "@/features/customers/components/forms/customer-edit-form-dialog";
 import type { Customer } from "@/features/customers/schema/customer";
+import { getInitials } from "@/lib/name";
 import { Link } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
@@ -34,9 +36,25 @@ export const columns: ColumnDef<Customer>[] = [
     header: ({ column }) => {
       return <TableHeaderButton column={column}>Name</TableHeaderButton>;
     },
-    cell: ({ getValue }) => (
-      <span className="font-medium">{getValue() as string}</span>
-    ),
+    cell: ({ row }) => {
+      const name = row.original.name;
+      const initials = getInitials(name);
+      return (
+        <div className="flex items-center gap-4">
+          <Avatar className="size-9 rounded-sm">
+            <AvatarImage
+              src={`${import.meta.env.VITE_BASE_URL}/storage/images/${row.original.image}`}
+              alt={initials}
+              className="rounded-sm"
+            />
+            <AvatarFallback className="rounded-sm text-xs">
+              {getInitials(name)}
+            </AvatarFallback>
+          </Avatar>
+          <span>{name}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "address",

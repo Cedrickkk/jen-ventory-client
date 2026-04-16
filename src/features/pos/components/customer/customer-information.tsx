@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
   CardDescription,
@@ -7,6 +8,7 @@ import {
 import { useGetCustomerDebtSummary } from "@/features/customers/queries/use-customer";
 import { useSelectedCustomer } from "@/features/pos/store/selectors/customer-selector";
 import { formatCurrency } from "@/lib/currency";
+import { getInitials } from "@/lib/name";
 import { LoaderCircle } from "lucide-react";
 
 export default function CustomerInformation() {
@@ -19,7 +21,28 @@ export default function CustomerInformation() {
     <Card className="rounded-md">
       <CardHeader>
         <CardTitle>
-          {selectedCustomer ? selectedCustomer.name : "Walk-in"}
+          {selectedCustomer ? (
+            <div className="flex flex-col items-start justify-start gap-4">
+              <Avatar className="size-12 rounded-sm">
+                <AvatarImage
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/images/${selectedCustomer.image}`}
+                  alt={selectedCustomer.name}
+                  className="rounded-sm"
+                />
+                <AvatarFallback className="text-xs">
+                  {getInitials(selectedCustomer.name)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <span>{selectedCustomer.name}</span>
+                <span className="text-muted-foreground text-sm font-normal">
+                  {selectedCustomer.phone}
+                </span>
+              </div>
+            </div>
+          ) : (
+            "Walk-in"
+          )}
         </CardTitle>
         <CardDescription>
           {!selectedCustomer && "No account selected"}
