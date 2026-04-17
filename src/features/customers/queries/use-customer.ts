@@ -8,6 +8,7 @@ import {
   getCustomerDebtSummary,
   getCustomerGCashHistory,
   getCustomerTransactions,
+  recordDebtPayment,
   searchCustomer,
   toggleCustomerStatus,
 } from "@/features/customers/api/customer-api";
@@ -15,6 +16,7 @@ import type {
   CreateCustomer,
   EditCustomer,
 } from "@/features/customers/schema/customer";
+import type { CreateDebtPayment } from "@/features/transactions/schema/debt";
 import {
   keepPreviousData,
   queryOptions,
@@ -159,4 +161,23 @@ export const useGetCustomerDebtSummary = (id: number | null) => {
 
 export const useGetCustomerGCashHistory = (id: number) => {
   return useQuery(customerQueries.gCashHistory(id));
+};
+
+export const useRecordDebtPayment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      customerId,
+      payments,
+    }: {
+      customerId: number;
+      payments: CreateDebtPayment;
+    }) => recordDebtPayment(customerId, payments),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: customerQueries.debts(variables.customerId),
+      });
+    },
+  });
 };

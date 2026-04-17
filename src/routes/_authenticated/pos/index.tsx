@@ -1,5 +1,4 @@
 import { PageHeader } from "@/components/page-header";
-import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
@@ -15,6 +14,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
+import DebtPaymentCreateFormDialog from "@/features/debts/components/debt-payment-create-form-dialog";
+import GCashLogCreateTransactionDialog from "@/features/gcash/components/gcash-log-create-transaction-dialog";
 import PosRightPanel from "@/features/pos/components/pos-right-panel";
 import PosProductVariantDialog from "@/features/pos/components/product/pos-product-variant-dialog";
 import ProductList from "@/features/products/components/product-list";
@@ -64,7 +65,7 @@ function RouteComponent() {
               title="Cashier"
               description="Lorem ipsum dolor sit, amet consectetur."
             />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-2">
               <InputGroup className="md:max-w-2xl">
                 <InputGroupInput
                   placeholder="Search product..."
@@ -84,8 +85,9 @@ function RouteComponent() {
                   </InputGroupAddon>
                 )}
               </InputGroup>
-              <Button>Utang</Button>
-              <Button>GCash</Button>
+              <DebtPaymentCreateFormDialog />
+              <DebtPaymentCreateFormDialog />
+              <GCashLogCreateTransactionDialog />
             </div>
           </div>
           <div className="relative">

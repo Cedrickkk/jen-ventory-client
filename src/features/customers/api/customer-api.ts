@@ -11,7 +11,11 @@ import type {
   PaginatedCustomerTransaction,
 } from "@/features/customers/schema/customer";
 import type { PaginatedGCashServiceLog } from "@/features/gcash/schema/gcash";
-import type { DebtSummary } from "@/features/transactions/schema/debt";
+import type {
+  CreateDebtPayment,
+  Debt,
+  DebtSummary,
+} from "@/features/transactions/schema/debt";
 import { api } from "@/lib/api";
 import axios from "axios";
 
@@ -202,6 +206,27 @@ export const getCustomerGCashHistory = async (id: number) => {
     const { data } = await api.get<
       SuccessApiResponse<PaginatedGCashServiceLog>
     >(`/customers/${id}/gcash`);
+    return data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data as ErrorApiResponse;
+    }
+    throw error;
+  }
+};
+
+export const recordDebtPayment = async (
+  customerId: number,
+  payment: CreateDebtPayment,
+) => {
+  try {
+    const { data } = await api.post<SuccessApiResponse<Debt>>(
+      `/customers/${customerId}/debt/payment`,
+      payment,
+    );
     return data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
