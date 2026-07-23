@@ -5,6 +5,7 @@ import CustomerInformation from "@/features/pos/components/customer/customer-inf
 import CustomerSelector from "@/features/pos/components/customer/customer-selector";
 import PaymentTabContent from "@/features/pos/components/payment/payment-tab-content";
 import { useCartCount } from "@/features/pos/store/selectors/cart-selector";
+import { useSelectedCustomer } from "@/features/pos/store/selectors/customer-selector";
 import {
   useActiveTab,
   useUIActions,
@@ -21,6 +22,7 @@ export default function PosRightPanel() {
   const activeTab = useActiveTab();
   const { setActiveTab } = useUIActions();
   const count = useCartCount();
+  const customer = useSelectedCustomer();
 
   return (
     <div className="flex flex-col gap-4">
@@ -42,7 +44,7 @@ export default function PosRightPanel() {
         </div>
         <CustomerSelector />
       </div>
-      <CustomerInformation />
+      <CustomerInformation customer={customer} />
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as ActiveTab)}

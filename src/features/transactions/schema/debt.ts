@@ -33,9 +33,23 @@ export const debtSummaryResponseSchema = z.object({
   netCredit: z.number(),
 });
 
+export const debtPaymentMethod = z.object({
+  method: paymentMethodEnum,
+  amount: z.number().positive("Amount must be greater than 0"),
+});
+
+export const debtPaymentSchema = z.object({
+  customerId: z.number(),
+  payments: z.array(debtPaymentMethod),
+  notes: z.string().optional(),
+});
+
 export type Debt = z.infer<typeof debtResponseSchema>;
 export type CreateDebt = z.infer<typeof debtSchema>;
 export type PaginatedDebt = Paginated<Debt>;
+
+export type DebtPaymentMethod = z.infer<typeof debtPaymentMethod>;
+export type CreateDebtPayment = z.infer<typeof debtPaymentSchema>;
 
 export type DebtLedgerType = z.infer<typeof debtLedgerTypeEnum>;
 
