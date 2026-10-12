@@ -13,8 +13,8 @@ import type {
 import type { PaginatedGCashServiceLog } from "@/features/gcash/schema/gcash";
 import type {
   CreateDebtPayment,
-  Debt,
   DebtSummary,
+  PaginatedDebt,
 } from "@/features/transactions/schema/debt";
 import { api } from "@/lib/api";
 import axios from "axios";
@@ -186,7 +186,7 @@ export const getCustomerDebtSummary = async (id: number) => {
 
 export const getCustomerDebtHistory = async (id: number) => {
   try {
-    const { data } = await api.get<SuccessApiResponse<DebtSummary>>(
+    const { data } = await api.get<SuccessApiResponse<PaginatedDebt>>(
       `/customers/${id}/debt/history`,
     );
     return data;
@@ -221,11 +221,13 @@ export const getCustomerGCashHistory = async (id: number) => {
 export const recordDebtPayment = async (
   customerId: number,
   payment: CreateDebtPayment,
+  idempotencyKey: string,
 ) => {
   try {
-    const { data } = await api.post<SuccessApiResponse<Debt>>(
+    const { data } = await api.post<SuccessApiResponse<DebtSummary>>(
       `/customers/${customerId}/debt/payment`,
-      payment,
+      { payments: payment.payments, notes: payment.notes },
+      { headers: { "Idempotency-Key": idempotencyKey } },
     );
     return data;
   } catch (error: unknown) {

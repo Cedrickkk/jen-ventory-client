@@ -17,6 +17,7 @@ import type {
   EditCustomer,
 } from "@/features/customers/schema/customer";
 import type { CreateDebtPayment } from "@/features/transactions/schema/debt";
+import { SubmissionIdentity } from "@/lib/idempotency";
 import {
   keepPreviousData,
   queryOptions,
@@ -24,6 +25,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useRef } from "react";
 import { useDebounce } from "use-debounce";
 
 export const customerQueries = {
@@ -165,6 +167,7 @@ export const useGetCustomerGCashHistory = (id: number) => {
 
 export const useRecordDebtPayment = () => {
   const queryClient = useQueryClient();
+  const submission = useRef(new SubmissionIdentity());
 
   return useMutation({
     mutationFn: ({
@@ -173,8 +176,14 @@ export const useRecordDebtPayment = () => {
     }: {
       customerId: number;
       payments: CreateDebtPayment;
-    }) => recordDebtPayment(customerId, payments),
+    }) =>
+      recordDebtPayment(
+        customerId,
+        payments,
+        submission.current.forPayload({ customerId, payments }),
+      ),
     onSuccess: (_data, variables) => {
+      submission.current.complete();
       queryClient.invalidateQueries({
         queryKey: customerQueries.debts(variables.customerId),
       });
