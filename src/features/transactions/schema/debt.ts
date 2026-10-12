@@ -12,15 +12,15 @@ export const debtLedgerTypeEnum = z.enum([
 
 export const debtSchema = z.object({
   customerId: z.number(),
-  transactionId: z.number(),
+  transactionId: z.number().nullable(),
   type: debtLedgerTypeEnum,
   amount: z.number(),
-  paymentMethod: paymentMethodEnum,
-  notes: z.string().optional(),
+  paymentMethod: paymentMethodEnum.nullable(),
+  notes: z.string().nullish(),
 });
 
 export const debtResponseSchema = z.object({
-  ...baseResponseDataSchema.shape,
+  ...baseResponseDataSchema.omit({ updatedAt: true }).shape,
   ...debtSchema.shape,
 });
 
@@ -40,8 +40,8 @@ export const debtPaymentMethod = z.object({
 
 export const debtPaymentSchema = z.object({
   customerId: z.number(),
-  payments: z.array(debtPaymentMethod),
-  notes: z.string().optional(),
+  payments: z.array(debtPaymentMethod).min(1),
+  notes: z.string().nullish(),
 });
 
 export type Debt = z.infer<typeof debtResponseSchema>;

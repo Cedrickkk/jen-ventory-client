@@ -12,7 +12,7 @@ export const baseApiResponseSchema = z.object({
   message: z.string(),
   meta: z.object({
     requestId: z.string(),
-    timestamp: z.date(),
+    timestamp: z.string().datetime(),
   }),
 });
 
@@ -24,7 +24,7 @@ export const successResponseSchema = <T extends z.ZodType>(dataShape: T) =>
 
 export const errorResponseSchema = z.object({
   ...baseApiResponseSchema.shape,
-  errors: z.record(z.string(), z.string()).nullable(),
+  errors: z.union([z.record(z.string(), z.string()), z.array(z.object({ field: z.string(), message: z.string() }))]).nullable(),
 });
 
 export type BaseResponseData = z.infer<typeof baseResponseDataSchema>;
@@ -32,6 +32,6 @@ export type BaseApiResponse = z.infer<typeof baseApiResponseSchema>;
 export type SuccessApiResponse<T> = BaseApiResponse & {
   data?: T;
 };
-export type ErrorApiResponse<T = Record<string, string>> = BaseApiResponse & {
+export type ErrorApiResponse<T = Record<string, string> | Array<{ field: string; message: string }>> = BaseApiResponse & {
   errors: T | null;
 };
