@@ -57,11 +57,15 @@ export const getTransactionById = async (id: number) => {
   }
 };
 
-export const createTransaction = async (transaction: CreateTransaction) => {
+export const createTransaction = async (
+  transaction: CreateTransaction,
+  idempotencyKey: string,
+) => {
   try {
     const { data } = await api.post<SuccessApiResponse<Transaction>>(
       `/transactions`,
       transaction,
+      { headers: { "Idempotency-Key": idempotencyKey } },
     );
     return data;
   } catch (error: unknown) {

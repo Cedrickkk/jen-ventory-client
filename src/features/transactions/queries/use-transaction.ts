@@ -9,12 +9,14 @@ import {
   getTransactionById,
 } from "@/features/transactions/api/transaction-api";
 import { transactionResponseSchema } from "@/features/transactions/schema/transaction";
+import { SubmissionIdentity } from "@/lib/idempotency";
 import {
   queryOptions,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useRef } from "react";
 import z from "zod/v3";
 
 export const transactionQueries = {
@@ -105,6 +107,7 @@ const submitPayloadSchema = z
   });
 
 export const useCreatePosTransaction = () => {
+  const submission = useRef(new SubmissionIdentity());
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -129,13 +132,17 @@ export const useCreatePosTransaction = () => {
         throw payloadResult.error;
       }
 
-      const response = await createTransaction(payloadResult.data);
+      const response = await createTransaction(
+        payloadResult.data,
+        submission.current.forPayload(payloadResult.data),
+      );
       return transactionResponseSchema.parse(response?.data);
     },
     onMutate: () => {
       useAppStore.getState().setSubmitting(true);
     },
     onSuccess: (data) => {
+      submission.current.complete();
       const s = useAppStore.getState();
       const customerId = s.selectedCustomer?.id ?? null;
 
@@ -159,7 +166,7 @@ export const useCreatePosTransaction = () => {
       });
     },
     onError: (error) => {
-      console.error("Transaction failed", error);
+      if (error instanceof Error) console.error(error.message);
     },
     onSettled: () => {
       useAppStore.getState().setSubmitting(false);
