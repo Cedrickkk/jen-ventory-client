@@ -240,3 +240,12 @@ export const recordDebtPayment = async (
     throw error;
   }
 };
+
+export const downloadCustomerDebtReport = async (id: number) => {
+  const { data } = await api.get<Blob>(`/reports/customers/${id}/debt.pdf`, { responseType: "blob" });
+  const url = URL.createObjectURL(data);
+  try {
+    const link = document.createElement("a"); link.href = url;
+    link.download = `customer-debt-${id}.pdf`; link.click();
+  } finally { setTimeout(() => URL.revokeObjectURL(url), 1000); }
+};
