@@ -30,6 +30,13 @@ Jenventory is the solution I built for her. This is the frontend — a clean das
 | Charts | shadcn/ui Charts (Recharts-based) |
 | Linting / Format | ESLint + Prettier |
 
+## Docker
+
+The client Dockerfile builds the Vite app and serves it with Nginx. Run
+`docker compose up --build -d --wait` from the parent `jenventory/` directory.
+The browser uses `/api/v1`, proxied to the API container. See the
+[root setup guide](../README.md) for credentials and optional seeding.
+
 ## Getting Started
 
 ### Prerequisites
