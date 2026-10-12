@@ -1,7 +1,6 @@
 "use client";
 
 import { cva, type VariantProps } from "class-variance-authority";
-import Cookies from "js-cookie";
 import { PanelLeftIcon } from "lucide-react";
 import { Slot } from "radix-ui";
 import * as React from "react";
@@ -56,12 +55,8 @@ function useSidebar() {
 
 function getCookieValue(name: string) {
   if (typeof document === "undefined") return null;
-  const cookies = Cookies.get();
-  for (const [key, value] of Object.entries(cookies)) {
-    if (key === name) {
-      return value === "true";
-    }
-  }
+  const value = document.cookie.split("; ").find((entry) => entry.startsWith(`${name}=`))?.split("=")[1];
+  if (value !== undefined) return value === "true";
   return null;
 }
 
@@ -99,10 +94,7 @@ function SidebarProvider({
       }
 
       // This sets the cookie to keep the sidebar state.
-      Cookies.set(SIDEBAR_COOKIE_NAME, String(openState), {
-        path: "/",
-        expires: SIDEBAR_COOKIE_MAX_AGE,
-      });
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; SameSite=Lax`;
     },
     [setOpenProp, open],
   );
@@ -625,10 +617,7 @@ function SidebarMenuSkeleton({
 }: React.ComponentProps<"div"> & {
   showIcon?: boolean;
 }) {
-  // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`;
-  }, []);
+  const width = "70%";
 
   return (
     <div
